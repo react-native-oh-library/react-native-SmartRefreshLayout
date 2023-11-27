@@ -1,10 +1,15 @@
 {
   "name": "react-native-smartrefreshlayout",
-  "version": "0.6.7",
+  "version": "0.6.7-0.0.8",
   "description": "基于android SmartRefreshLayout的封装",
-  "main": "index.js",
+  "main": "lib/commonjs/index.js",
+  "react-native": "src/index.tsx",
+  "source": "src/index.tsx",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/src/index.d.ts",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "prepare": "bob build"
   },
   "repository": {
     "type": "git",
@@ -26,7 +31,29 @@
   },
   "homepage": "https://github.com/react-native-studio/react-native-SmartRefreshLayout#readme",
   "dependencies": {
-    "prop-types":"*"
+    "prop-types": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.20",
+    "react-native-builder-bob": "^0.18.3",
+    "typescript": "4.8.4"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
   }
 }
-
