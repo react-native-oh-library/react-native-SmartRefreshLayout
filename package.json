@@ -1,6 +1,6 @@
 {
-  "name": "react-native-smartrefreshlayout",
-  "version": "0.6.7-0.0.8",
+  "name": "@react-native-oh-tpl/react-native-smartrefreshlayout",
+  "version": "0.6.7-0.0.9",
   "description": "基于android SmartRefreshLayout的封装",
   "main": "lib/commonjs/index.js",
   "react-native": "src/index.tsx",
@@ -9,11 +9,16 @@
   "types": "lib/typescript/src/index.d.ts",
   "scripts": {
     "test": "npm test",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "prettier": "prettier --write src"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-native-studio/react-native-SmartRefreshLayout.git"
+    "url": "https://github.com/react-native-oh-library/react-native-SmartRefreshLayout.git"
   },
   "keywords": [
     "react",

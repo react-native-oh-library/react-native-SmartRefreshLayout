@@ -23,7 +23,7 @@ import {
 } from 'rnoh'
 import Logger from './Logger'
 
-const TAG: string = "[RNOH] SmartRefreshLayout"
+const TAG: string = "[RNOH] RNCDefaultHeader"
 export const DEFAULT_HEADER_TYPE = "RNCDefaultHeader"
 
 export interface DefaultHeaderProps extends ViewBaseProps {
@@ -42,7 +42,7 @@ export struct RNCDefaultHeader {
 
     aboutToAppear() {
         this.descriptor = this.ctx.descriptorRegistry.getDescriptor<DefaultHeaderDescriptor>(this.tag)
-         Logger.info(TAG," RNCDefaultHeader: props = " + JSON.stringify(this.descriptor.props))
+         Logger.info(TAG,"RNCDefaultHeader: props = " + JSON.stringify(this.descriptor.props))
         this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
             (newDescriptor) => {
                 this.descriptor = (newDescriptor as DefaultHeaderDescriptor)
