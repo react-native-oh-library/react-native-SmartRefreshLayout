@@ -23,7 +23,7 @@ import {
 } from 'rnoh'
 import Logger from './Logger'
 
-const TAG: string = "[RNOH] SmartRefreshLayout"
+const TAG: string = "[RNOH] RNCAnyHeader"
 export const ANY_HEADER_TYPE = "RNCAnyHeader"
 
 export interface AnyHeaderProps extends ViewBaseProps {

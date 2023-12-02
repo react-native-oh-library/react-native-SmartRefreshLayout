@@ -22,7 +22,7 @@ import {
     Tag,
     ColorSegments,
     convertColorSegmentsToString,
-    RNScrollViewManager
+    RNScrollViewManager,
 } from 'rnoh'
 import { PullToRefresh } from './PullToRefresh'
 import { PullToRefreshConfigurator } from './PullToRefreshConfigurator'
@@ -58,6 +58,7 @@ export struct SmartRefreshControl {
     @State descriptor: SmartRefreshControlDescriptor = {} as SmartRefreshControlDescriptor
     private unregisterDescriptorChangesListener?: () => void = undefined
     private cleanupCommandCallback?: () => void = undefined
+    private unlockScrollingCallback?: () => void = undefined
     private scroller: Scroller = new Scroller();
     private pullToRefreshConfigurator:PullToRefreshConfigurator = new PullToRefreshConfigurator();
     private finishRefresh:(value: string | PromiseLike<string>) => void = ()=>{}
@@ -168,6 +169,14 @@ export struct SmartRefreshControl {
     }
 
     checkHeaderMove(displayedHeaderHeight:number){
+        if (this.unlockScrollingCallback === undefined && displayedHeaderHeight != 0){
+            this.getScroller().scrollEdge(Edge.Top)
+            this.unlockScrollingCallback = this.getChildScrollViewComponentManager()?.lockScrolling()
+        }
+        if (this.unlockScrollingCallback !== undefined && displayedHeaderHeight == 0){
+            this.unlockScrollingCallback()
+            this.unlockScrollingCallback = undefined
+        }
         // 下拉中
         if (this.displayedHeaderHeight < displayedHeaderHeight) {
             this.onHeaderPulling(displayedHeaderHeight)
@@ -177,8 +186,14 @@ export struct SmartRefreshControl {
         this.displayedHeaderHeight = displayedHeaderHeight
     }
 
+    // 因为子节点还没创建出来，需要延迟获取RNScrollViewManager
+    getChildScrollViewComponentManager():RNScrollViewManager{
+        let scrollViewComponentManager = this.ctx.componentManagerRegistry.getComponentManager(this.scrollViewTag) as RNScrollViewManager
+        return scrollViewComponentManager
+    }
+
     getScroller():Scroller{
-        let scroller = (this.ctx.componentManagerRegistry.getComponentManager(this.scrollViewTag) as RNScrollViewManager).getScroller() as Scroller
+        let scroller = this.getChildScrollViewComponentManager()?.getScroller() as Scroller
         if (scroller) {
             return scroller
         }else {

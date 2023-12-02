@@ -150,6 +150,9 @@ export struct PullToRefresh {
         })
         .onActionUpdate((event?: GestureEvent) => {
           if (event !== undefined) {
+            if (event.fingerList.length !== 1){
+              this.touchYOld = event.offsetY;
+            }
             this.onActionUpdate(event);
           }
         })
