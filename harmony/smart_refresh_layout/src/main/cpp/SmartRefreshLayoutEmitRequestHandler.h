@@ -40,14 +40,12 @@ public:
             float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
             float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
             facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderPulling event{percent, offset, headerHeight};
-            LOG(INFO) << "onHeaderPulling " << event.headerHeight << event.offset << event.percent;
             eventEmitter->onHeaderPulling(event);
         } else if (eventName == "onHeaderReleasing") {
             float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
             float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
             float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
             facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderReleasing event{percent, offset, headerHeight};
-            LOG(INFO) << "onHeaderReleasing " << event.headerHeight << event.offset << event.percent;
             eventEmitter->onHeaderReleasing(event);
         }
     }

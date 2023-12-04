@@ -81,7 +81,7 @@ export struct SmartRefreshControl {
                 RNComponentFactory({ ctx: this.ctx, tag: this.data[1], buildCustomComponent: this.buildCustomComponent })
             }
             .onAreaChange((oldValue: Area, newValue: Area) => {
-                 Logger.info(TAG,"RNOH SmartRefreshControl:onAreaChange " + JSON.stringify(newValue.height))
+                 Logger.debug(TAG,"RNOH SmartRefreshControl:onAreaChange " + JSON.stringify(newValue.height))
                 this.checkHeaderMove(parseInt(newValue.height.toString()))
             })
             .width('100%')
@@ -169,8 +169,11 @@ export struct SmartRefreshControl {
     }
 
     checkHeaderMove(displayedHeaderHeight:number){
-        if (this.unlockScrollingCallback === undefined && displayedHeaderHeight != 0){
+        // 滚动时保持吸顶
+        if (this.getScroller().currentOffset().yOffset !== 0){
             this.getScroller().scrollEdge(Edge.Top)
+        }
+        if (this.unlockScrollingCallback === undefined && displayedHeaderHeight != 0){
             this.unlockScrollingCallback = this.getChildScrollViewComponentManager()?.lockScrolling()
         }
         if (this.unlockScrollingCallback !== undefined && displayedHeaderHeight == 0){

@@ -12,7 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// 对比原库新增finishDelay getScroller
+/* 对比原库新增finishDelay getScroller
+ * 修改可下拉区域为50%(371行,375行)
+ * 屏蔽scrollEdge(356行)
+ */
 import { PullToRefreshConfigurator } from './PullToRefreshConfigurator'
 
 const IS_FREE = 0;
@@ -350,26 +353,26 @@ export struct PullToRefresh {
     if (this.refreshConfigurator !== undefined) {
       let maxTranslate = this.refreshConfigurator.getMaxTranslate()
       let refreshAnimDuration = this.refreshConfigurator.getRefreshAnimDuration();
-      if (this.refreshConfigurator.getListIsPlacement()) {
-        if (this.state !== undefined) {
-          if (this.state == IS_PULL_DOWN_1 || this.state == IS_PULL_DOWN_2) {
-            // 让列表归位到顶部
-            this.getScroller().scrollEdge(Edge.Top);
-            // 让列表归位到底部
-          } else if (this.state == IS_PULL_UP_1 || this.state == IS_PULL_UP_2) {
-            this.getScroller().scrollEdge(Edge.Bottom);
-          }
-        }
-      }
+      // if (this.refreshConfigurator.getListIsPlacement()) {
+      //   if (this.state !== undefined) {
+      //     if (this.state == IS_PULL_DOWN_1 || this.state == IS_PULL_DOWN_2) {
+      //       // 让列表归位到顶部
+      //       this.getScroller().scrollEdge(Edge.Top);
+      //       // 让列表归位到底部
+      //     } else if (this.state == IS_PULL_UP_1 || this.state == IS_PULL_UP_2) {
+      //       this.getScroller().scrollEdge(Edge.Bottom);
+      //     }
+      //   }
+      // }
       if (this.trYTop !== undefined) {
         if (this.trYTop > 0) { // 下拉结束
           if (this.state !== undefined && maxTranslate !== undefined) {
             if (this.state == IS_FREE || this.state == IS_PULL_DOWN_1 || this.state == IS_PULL_DOWN_2) {
-              if (this.trYTop / maxTranslate < 0.75) {
+              if (this.trYTop / maxTranslate < 0.5) {
                 this.closeRefresh();
               } else {
                 this.state = IS_REFRESHING;
-                this.trYTop = maxTranslate * 0.75;
+                this.trYTop = maxTranslate * 0.5;
                 clearInterval(this.timer);
                 this.timer = setInterval(() => {
                   if (this.value !== undefined) {
