@@ -52,4 +52,4 @@ class Logger {
     }
 }
 
-export default new Logger('RNCProgressBar', 0xFF00, false)
+export default new Logger('SmartRefreshLayout', 0xFF00, false)
