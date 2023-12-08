@@ -27,6 +27,7 @@
 				<filteritem type="filename" name="icon.png" desc="应用图标"/>
 				<filteritem type="filename" name="app_icon.png" desc="应用图标"/>
 				<filteritem type="filename" name="warn.png" desc="页面展示图标"/>
+				<filteritem type="filename" name="*.png" desc="展示图标"/>
 			</filefilter>
 		</filefilterlist>
         <policylist>
