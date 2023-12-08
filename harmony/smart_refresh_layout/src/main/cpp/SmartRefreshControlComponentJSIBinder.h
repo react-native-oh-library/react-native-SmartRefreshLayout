@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+#ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHCONTROLCOMPONENTJSIBINDER_H
+#define SMART_SRC_MAIN_CPP_SMARTREFRESHCONTROLCOMPONENTJSIBINDER_H
 #include "RNOH/UIManagerModule.h"
 #include "RNOH/BaseComponentJSIBinder.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentJSIBinder.h"
@@ -32,11 +33,7 @@ protected:
         nativeProps.setProperty(rt, "primaryColor", "number");
         return nativeProps;
     }
-//
-//    facebook::jsi::Object createBubblingEventTypes(facebook::jsi::Runtime &rt) override {
-//        return facebook::jsi::Object(rt);
-//    }
-//
+
     facebook::jsi::Object createDirectEventTypes(facebook::jsi::Runtime &rt) override {
         facebook::jsi::Object events(rt);
         events.setProperty(rt, "topRefresh", createDirectEvent(rt, "onRefresh"));
@@ -48,3 +45,4 @@ protected:
 };
 
 } // namespace rnoh
+#endif

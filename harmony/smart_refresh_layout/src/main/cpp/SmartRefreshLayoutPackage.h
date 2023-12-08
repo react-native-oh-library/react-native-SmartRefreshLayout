@@ -1,8 +1,9 @@
-/*
+/**
  * Copyright (C) 2023 Huawei Device Co., Ltd.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * you may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
+#define SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
+
 #include "RNOH/Package.h"
 #include "ComponentDescriptors.h"
 #include "SmartRefreshControlComponentJSIBinder.h"
@@ -52,10 +57,6 @@ class SmartRefreshLayoutPackage : public Package {
         {"SmartRefreshLayout",std::make_shared<SmartRefreshControlComponentJSIBinder>()},
         {"RNCAnyHeader",std::make_shared<RNCAnyHeaderJSIBinder>()},
         {"RNCDefaultHeader",std::make_shared<RNCDefaultHeaderJSIBinder>()},
-//        {"RTNCenteredText",std::make_shared<RNCDefaultHeaderJSIBinder>()},
-//        {"RNCClassicsHeader",std::make_shared<RNCDefaultHeaderJSIBinder>()},
-//        {"RNCMaterialHeader",std::make_shared<RNCDefaultHeaderJSIBinder>()},
-//        {"RNCStoreHouseHeader",std::make_shared<RNCDefaultHeaderJSIBinder>()},
         };
     }
     
@@ -64,10 +65,6 @@ class SmartRefreshLayoutPackage : public Package {
         {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutComponentNapiBinder>()},
         {"RNCAnyHeader", std::make_shared<RNCAnyHeaderNapiBinder>()},
         {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
-//        {"RTNCenteredText", std::make_shared<RNCDefaultHeaderNapiBinder>()},
-//        {"RNCClassicsHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
-//        {"RNCMaterialHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
-//        {"RNCStoreHouseHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
         };
     }
     
@@ -76,3 +73,4 @@ class SmartRefreshLayoutPackage : public Package {
     }
 };
 } // namespace rnoh
+#endif
