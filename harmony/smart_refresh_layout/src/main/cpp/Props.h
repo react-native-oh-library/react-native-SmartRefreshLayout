@@ -17,8 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_PROPS_H
 #define SMART_SRC_MAIN_CPP_PROPS_H
 
-#pragma once
-
 #include <jsi/jsi.h>
 #include <react/renderer/components/view/ViewProps.h>
 #include <react/renderer/core/PropsParserContext.h>

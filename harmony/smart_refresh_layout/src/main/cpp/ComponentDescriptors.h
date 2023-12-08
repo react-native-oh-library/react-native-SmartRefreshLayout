@@ -17,7 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_COMPONENTDESCRIPTORS_H
 #define SMART_SRC_MAIN_CPP_COMPONENTDESCRIPTORS_H
 
-#pragma once
 #include "ShadowNodes.h"
 #include <react/renderer/core/ConcreteComponentDescriptor.h>
 

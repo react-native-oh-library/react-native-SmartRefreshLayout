@@ -17,7 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_RNCANYHEADERJSIBINDER_H
 #define SMART_SRC_MAIN_CPP_RNCANYHEADERJSIBINDER_H
 
-#pragma once
 #include "RNOH/UIManagerModule.h"
 #include "RNOH/BaseComponentJSIBinder.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentJSIBinder.h"

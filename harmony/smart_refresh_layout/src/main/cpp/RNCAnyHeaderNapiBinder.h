@@ -17,7 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_RNCANYHEADERNAPIBINDER_H
 #define SMART_SRC_MAIN_CPP_RNCANYHEADERNAPIBINDER_H
 
-#pragma once
 #include "RNOH/BaseComponentNapiBinder.h"
 #include "Props.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentNapiBinder.h"
