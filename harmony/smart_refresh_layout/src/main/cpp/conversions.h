@@ -17,8 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_CONVERSIONS_H
 #define SMART_SRC_MAIN_CPP_CONVERSIONS_H
 
-#pragma once
-
 #include <folly/dynamic.h>
 #include <react/renderer/components/scrollview/primitives.h>
 #include <react/renderer/core/PropsParserContext.h>

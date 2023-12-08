@@ -17,7 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_RNCDEFAULTHEADERJSIBINDER_H
 #define SMART_SRC_MAIN_CPP_RNCDEFAULTHEADERJSIBINDER_H
 
-#pragma once
 #include "RNOH/UIManagerModule.h"
 #include "RNOH/BaseComponentJSIBinder.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentJSIBinder.h"
@@ -38,5 +37,5 @@ protected:
     }
 };
 
-} // namespace rnoh
+} // namespace rnoh0
 #endif

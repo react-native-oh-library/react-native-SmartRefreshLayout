@@ -14,10 +14,10 @@
  */
 #ifndef SMART_SRC_MAIN_CPP_RNCDEFAULTHEADERNAPIBINDER_H
 #define SMART_SRC_MAIN_CPP_RNCDEFAULTHEADERNAPIBINDER_H
+
 #include "RNOH/BaseComponentNapiBinder.h"
 #include "Props.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentNapiBinder.h"
-
 
 namespace rnoh {
 

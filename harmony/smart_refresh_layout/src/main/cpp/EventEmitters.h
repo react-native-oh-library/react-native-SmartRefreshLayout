@@ -17,8 +17,6 @@
 #ifndef SMART_SRC_MAIN_CPP_EVENTEMITTERS_H
 #define SMART_SRC_MAIN_CPP_EVENTEMITTERS_H
 
-#pragma once
-
 #include <react/renderer/components/view/ViewEventEmitter.h>
 #include <jsi/jsi.h>
 
