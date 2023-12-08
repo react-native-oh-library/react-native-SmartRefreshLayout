@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+#ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTCOMPONENTNAPIBINDER_H
+#define SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTCOMPONENTNAPIBINDER_H
 #include "RNOH/BaseComponentNapiBinder.h"
 #include "Props.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentNapiBinder.h"
@@ -22,7 +23,8 @@ namespace rnoh {
 
 class SmartRefreshLayoutComponentNapiBinder : public ViewComponentNapiBinder {
 public:
-    napi_value createProps(napi_env env, facebook::react::ShadowView const shadowView) override {
+    napi_value createProps(napi_env env, facebook::react::ShadowView const shadowView) override
+    {
         napi_value napiBaseProps = ViewComponentNapiBinder::createProps(env, shadowView);
         if (auto props = std::dynamic_pointer_cast<const facebook::react::SmartRefreshLayoutProps>(shadowView.props)) {
             return ArkJS(env)
@@ -45,3 +47,4 @@ public:
 };
 
 } // namespace rnoh
+#endif

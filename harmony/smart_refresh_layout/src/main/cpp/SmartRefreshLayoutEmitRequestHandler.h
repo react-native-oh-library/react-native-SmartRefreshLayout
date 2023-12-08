@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+#ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTEMITREQUESTHANDLER_H
+#define SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTEMITREQUESTHANDLER_H
 
 #include <glog/logging.h>
 #include "glog/logging.h"
@@ -24,7 +25,8 @@ namespace rnoh {
 
 class SmartRefreshLayoutEmitRequestHandler : public EventEmitRequestHandler {
 public:
-    void handleEvent(EventEmitRequestHandler::Context const &ctx) override {
+    void handleEvent(EventEmitRequestHandler::Context const &ctx) override
+    {
         ArkJS arkJs(ctx.env);
         auto eventName = ctx.eventName;
         auto eventEmitter =
@@ -52,3 +54,4 @@ public:
 };
 
 } // namespace rnoh
+#endif
