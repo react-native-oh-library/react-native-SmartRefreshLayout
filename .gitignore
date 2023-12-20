@@ -1,2 +1,13 @@
 .idea
 .DS_Store
+
+# node.js
+#
+node_modules/
+*.log
+
+# yarn
+yarn.lock
+
+# editor workspace settings
+.vscode
