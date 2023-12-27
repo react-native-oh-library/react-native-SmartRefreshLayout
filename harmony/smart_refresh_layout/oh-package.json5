@@ -7,7 +7,7 @@
   "name": "smart_refresh_layout",
   "description": "Please describe the basic information.",
   "main": "Index.ets",
-  "version": "1.0.0",
+  "version": "0.1.4",
   "dependencies": {},
   "compileOnlyDependencies": {}
 }
