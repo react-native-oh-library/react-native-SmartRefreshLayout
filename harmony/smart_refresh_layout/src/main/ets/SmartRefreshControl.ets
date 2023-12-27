@@ -170,7 +170,7 @@ export struct SmartRefreshControl {
 
     checkHeaderMove(displayedHeaderHeight:number){
         // 滚动时保持吸顶
-        if (this.getScroller().currentOffset().yOffset !== 0){
+        if (this.getScroller().currentOffset().yOffset !== 0 && displayedHeaderHeight > 0){
             this.getScroller().scrollEdge(Edge.Top)
         }
         if (this.unlockScrollingCallback === undefined && displayedHeaderHeight != 0){
