@@ -156,7 +156,11 @@ export struct PullToRefresh {
             if (event.fingerList.length !== 1){
               this.touchYOld = event.offsetY;
             }
-            this.onActionUpdate(event);
+            if (event.offsetY >= 0) {
+              this.onActionUpdate(event);
+            }else{
+              this.onActionEnd();
+            }
           }
         })
         .onActionEnd(() => {
