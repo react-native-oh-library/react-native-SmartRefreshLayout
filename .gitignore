@@ -11,3 +11,5 @@ yarn.lock
 
 # editor workspace settings
 .vscode
+lib
+*.tgz
