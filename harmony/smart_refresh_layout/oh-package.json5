@@ -1,13 +1,14 @@
 {
   "license": "Apache-2.0",
   "devDependencies": {
-    "rnoh": "file:../rnoh"
   },
   "author": "",
   "name": "smart_refresh_layout",
   "description": "Please describe the basic information.",
   "main": "index.ets",
-  "version": "0.1.5",
-  "dependencies": {},
+  "version": "0.1.6",
+  "dependencies": {
+    "rnoh": "file:../rnoh"
+  },
   "compileOnlyDependencies": {}
 }

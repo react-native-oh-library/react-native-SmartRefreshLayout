@@ -104,7 +104,7 @@ export struct SmartRefreshControl {
         )
         this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
             this.tag,
-            (command, args:number) => {
+            (command, args:ESObject[]) => {
                 if (command === 'finishRefresh') {
                      Logger.info(TAG," SmartRefreshControl: registerCommandCallback args = " + JSON.stringify(args))
                     let delayed: number = args[0]
@@ -125,7 +125,7 @@ export struct SmartRefreshControl {
 
     init(){
         this.pullToRefreshConfigurator.setMaxTranslate(this.descriptor.props.headerHeight * 2)
-            .setRefreshBackgroundColor(convertColorSegmentsToString(this.descriptor.props.primaryColor))
+            .setRefreshBackgroundColor(convertColorSegmentsToString(this.descriptor.props.primaryColor) as ResourceColor)
             .setHasLoadMore(false)
             .setSensitivity(0.5)
         let child = this.ctx.descriptorRegistry.getDescriptor(this.descriptor.childrenTags[0])
