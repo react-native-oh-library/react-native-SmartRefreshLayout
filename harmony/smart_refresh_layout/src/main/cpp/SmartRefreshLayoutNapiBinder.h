@@ -21,7 +21,7 @@
 
 namespace rnoh {
 
-class SmartRefreshLayoutComponentNapiBinder : public ViewComponentNapiBinder {
+class SmartRefreshLayoutNapiBinder : public ViewComponentNapiBinder {
 public:
     napi_value createProps(napi_env env, facebook::react::ShadowView const shadowView) override
     {

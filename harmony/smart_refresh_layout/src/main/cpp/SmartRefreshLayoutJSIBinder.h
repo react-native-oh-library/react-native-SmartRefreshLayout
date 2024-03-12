@@ -14,12 +14,11 @@
  */
 #ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHCONTROLCOMPONENTJSIBINDER_H
 #define SMART_SRC_MAIN_CPP_SMARTREFRESHCONTROLCOMPONENTJSIBINDER_H
-#include "RNOH/UIManagerModule.h"
 #include "RNOH/BaseComponentJSIBinder.h"
 #include "RNOHCorePackage/ComponentBinders/ViewComponentJSIBinder.h"
 
 namespace rnoh {
-class SmartRefreshControlComponentJSIBinder : public ViewComponentJSIBinder {
+class SmartRefreshLayoutJSIBinder : public ViewComponentJSIBinder {
 protected:
     facebook::jsi::Object createBubblingEventTypes(facebook::jsi::Runtime &rt) override {
         auto events = ViewComponentJSIBinder::createBubblingEventTypes(rt);

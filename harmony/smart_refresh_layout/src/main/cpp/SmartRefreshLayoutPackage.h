@@ -19,58 +19,78 @@
 
 #include "RNOH/Package.h"
 #include "ComponentDescriptors.h"
-#include "SmartRefreshControlComponentJSIBinder.h"
-#include "SmartRefreshControlComponentNapiBinder.h"
+#include "SmartRefreshLayoutJSIBinder.h"
+#include "SmartRefreshLayoutNapiBinder.h"
 #include "RNCAnyHeaderJSIBinder.h"
 #include "RNCAnyHeaderNapiBinder.h"
 #include "RNCDefaultHeaderJSIBinder.h"
 #include "RNCDefaultHeaderNapiBinder.h"
 #include "SmartRefreshLayoutEmitRequestHandler.h"
+#include "RNCAnyHeaderComponentInstance.h"
+#include "SmartRefreshLayoutComponentInstance.h"
 
 namespace rnoh {
 
-class SmartRefreshLayoutPackage : public Package {
-  public:
-      SmartRefreshLayoutPackage(Package::Context ctx) : Package(ctx) {}
+    class SmartRefreshLayoutPackageComponentInstanceFactoryDelegate : public ComponentInstanceFactoryDelegate {
+    public:
+        using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
-      std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {
-          return {
-              facebook::react::concreteComponentDescriptorProvider<
-                  facebook::react::SmartRefreshLayoutComponentDescriptor>(),
-              facebook::react::concreteComponentDescriptorProvider<
-                  facebook::react::RNCAnyHeaderComponentDescriptor>(),
-              facebook::react::concreteComponentDescriptorProvider<
-                  facebook::react::RNCDefaultHeaderComponentDescriptor>(),
-//              facebook::react::concreteComponentDescriptorProvider<
-//                  facebook::react::RNCMaterialHeaderComponentDescriptor>(),
-//              facebook::react::concreteComponentDescriptorProvider<
-//                  facebook::react::RNCStoreHouseHeaderComponentDescriptor>(),
-//              facebook::react::concreteComponentDescriptorProvider<
-//                  facebook::react::RNCClassicsHeaderComponentDescriptor>(),
-        
-        
-          };
-    }
-    
-    ComponentJSIBinderByString createComponentJSIBinderByName() override{
-        return {
-        {"SmartRefreshLayout",std::make_shared<SmartRefreshControlComponentJSIBinder>()},
-        {"RNCAnyHeader",std::make_shared<RNCAnyHeaderJSIBinder>()},
-        {"RNCDefaultHeader",std::make_shared<RNCDefaultHeaderJSIBinder>()},
-        };
-    }
-    
-    ComponentNapiBinderByString createComponentNapiBinderByName() override{
-        return {
-        {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutComponentNapiBinder>()},
-        {"RNCAnyHeader", std::make_shared<RNCAnyHeaderNapiBinder>()},
-        {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
-        };
-    }
-    
-    EventEmitRequestHandlers createEventEmitRequestHandlers() override {
-        return {std::make_shared<SmartRefreshLayoutEmitRequestHandler>()};
-    }
-};
+        ComponentInstance::Shared create(ComponentInstanceFactoryContext ctx) override {
+            if (ctx.componentName == "RNCAnyHeader") {
+                return std::make_shared<RNCAnyHeaderComponentInstance>(m_ctx, ctx.tag);
+            } else if (ctx.componentName == "SmartRefreshLayout") {
+                return std::make_shared<SmartRefreshLayoutComponentInstance>(m_ctx, ctx.tag);
+            }
+            return nullptr;
+        }
+    };
+
+    class SmartRefreshLayoutPackage : public Package {
+    public:
+        SmartRefreshLayoutPackage(Package::Context ctx) : Package(ctx) {}
+
+        ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
+            return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>(m_ctx);
+        }
+
+        std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {
+            return {
+                facebook::react::concreteComponentDescriptorProvider<
+                    facebook::react::SmartRefreshLayoutComponentDescriptor>(),
+                facebook::react::concreteComponentDescriptorProvider<
+                    facebook::react::RNCAnyHeaderComponentDescriptor>(),
+                facebook::react::concreteComponentDescriptorProvider<
+                    facebook::react::RNCDefaultHeaderComponentDescriptor>(),
+                //              facebook::react::concreteComponentDescriptorProvider<
+                //                  facebook::react::RNCMaterialHeaderComponentDescriptor>(),
+                //              facebook::react::concreteComponentDescriptorProvider<
+                //                  facebook::react::RNCStoreHouseHeaderComponentDescriptor>(),
+                //              facebook::react::concreteComponentDescriptorProvider<
+                //                  facebook::react::RNCClassicsHeaderComponentDescriptor>(),
+
+
+            };
+        }
+
+        ComponentJSIBinderByString createComponentJSIBinderByName() override {
+            return {
+                {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutJSIBinder>()},
+                {"RNCAnyHeader", std::make_shared<RNCAnyHeaderJSIBinder>()},
+                {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderJSIBinder>()},
+            };
+        }
+
+        ComponentNapiBinderByString createComponentNapiBinderByName() override {
+            return {
+                {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutNapiBinder>()},
+                {"RNCAnyHeader", std::make_shared<RNCAnyHeaderNapiBinder>()},
+                {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
+            };
+        }
+
+        EventEmitRequestHandlers createEventEmitRequestHandlers() override {
+            return {std::make_shared<SmartRefreshLayoutEmitRequestHandler>()};
+        }
+    };
 } // namespace rnoh
 #endif
