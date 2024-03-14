@@ -9,7 +9,7 @@
 namespace rnoh {
     class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
     private:
-        PullToRefreshNode m_pullToRefreshNode;
+       // PullToRefreshNode m_pullToRefreshNode;
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
 
         bool overScrollBounce{true};

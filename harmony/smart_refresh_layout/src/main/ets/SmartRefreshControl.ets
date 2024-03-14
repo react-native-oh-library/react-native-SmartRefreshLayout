@@ -182,9 +182,9 @@ export struct SmartRefreshControl {
         }
         // 下拉中
         if (this.displayedHeaderHeight < displayedHeaderHeight) {
-            this.onHeaderPulling(displayedHeaderHeight)
+            this.onHeaderPulling(displayedHeaderHeight)  // 下拉中
         } else if (this.displayedHeaderHeight > displayedHeaderHeight){
-            this.onHeaderReleasing(displayedHeaderHeight)
+            this.onHeaderReleasing(displayedHeaderHeight) //回弹
         }
         this.displayedHeaderHeight = displayedHeaderHeight
     }

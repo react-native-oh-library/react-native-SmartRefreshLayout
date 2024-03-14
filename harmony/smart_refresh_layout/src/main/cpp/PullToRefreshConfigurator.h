@@ -14,16 +14,16 @@
 namespace rnoh {
     class PullToRefreshConfigurator {
     private:
-        bool hasRefresh = true;                   // 是否具有下拉刷新功能
-        bool hasLoadMore = true;                  // 是否具有上拉加载功能
-        uint32_t maxTranslate = 100;              // 可下拉上拉的最大距离
-        facebook::react::Float sensitivity = 0.7; // 下拉上拉灵敏度
-        bool listIsPlacement = true;              // 滑动结束后列表是否归位
+        bool hasRefresh{true};                   // 是否具有下拉刷新功能
+        bool hasLoadMore{true};                  // 是否具有上拉加载功能
+        uint32_t maxTranslate{100};              // 可下拉上拉的最大距离
+        facebook::react::Float sensitivity{0.7}; // 下拉上拉灵敏度
+        bool listIsPlacement{true};              // 滑动结束后列表是否归位
 
 
-        uint32_t animDuration = 150; // 滑动结束后，回弹动画执行时间
+        uint32_t animDuration{150}; // 滑动结束后，回弹动画执行时间
 
-        uint32_t refreshHeight = 30; // 下拉动画高度
+        uint32_t refreshHeight{30}; // 下拉动画高度
 
         facebook::react::SharedColor refreshColor = 0xFF6495ED; // 下拉动画颜色
 
@@ -33,16 +33,16 @@ namespace rnoh {
         //
         //         refreshTextSize ?: number | string | Resource = 18; // 下拉加载完毕后提示文本的字体大小
 
-        uint32_t refreshAnimDuration = 1000; // 下拉动画执行一次的时间
-        uint32_t loadImgHeight = 30;         // 上拉图片高度
+        uint32_t refreshAnimDuration{1000}; // 下拉动画执行一次的时间
+        uint32_t loadImgHeight{30};         // 上拉图片高度
 
-        std::string loadTextPullUp1 = "正在上拉刷新..."; // 上拉1阶段文本
+        std::string loadTextPullUp1{"正在上拉刷新..."}; // 上拉1阶段文本
 
-        std::string loadTextPullUp2 = "放开刷新"; // 上拉2阶段文本
+        std::string loadTextPullUp2{"放开刷新"}; // 上拉2阶段文本
 
-        std::string loadTextLoading = "正在玩命加载中..."; // 上拉加载更多中时的文本
+        std::string loadTextLoading{"正在玩命加载中..."}; // 上拉加载更多中时的文本
 
-        uint32_t finishDelay = 500; // 刷新完成时，延迟回弹的时间
+        uint32_t finishDelay{500}; // 刷新完成时，延迟回弹的时间
 
     public:
         PullToRefreshConfigurator setHasRefresh(const bool hasRefresh) {

@@ -18,9 +18,9 @@ namespace rnoh {
     class PullToRefreshNodeDelegate {
     public:
         virtual ~PullToRefreshNodeDelegate() = default;
-        virtual void onRefresh() {};
-        virtual void onHeaderPulling(const float &displayedHeaderHeight) {};
-        virtual void onHeaderReleasing(const float &displayedHeaderHeight) {};
+        virtual void onRefresh(){};
+        virtual void onHeaderPulling(const float &displayedHeaderHeight){};
+        virtual void onHeaderReleasing(const float &displayedHeaderHeight){};
     };
 
     class PullToRefreshNode : public ArkUINode {
@@ -58,12 +58,12 @@ namespace rnoh {
         float getDisplayedHeaderHeight() { return trYTop; }
 
         void insertChild(ArkUINode &child, bool &isHeader);
-
+        void insertHeaderChild(ArkUINode &child);
         void removeChild(ArkUINode &child);
         //         ArkUINode &setPosition(facebook::react::Point const &position) override;
-
+    
         void onNodeEvent(ArkUI_NodeEvent *event) override;
-
+    
         void setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate);
 
         void onActionUpdate(ArkUI_NodeTouchPoint const &event);
@@ -76,9 +76,12 @@ namespace rnoh {
                                     std::function<void(double)> callback);
 
         void closeRefresh();
-
+        void finishRefresh();
         void onRefresh();
-    
+        void setHeaderHeight(float h);
+        void setEnableRefresh(bool enable);
+        void setMaxTranslate(float maxHeight);
+
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
     };
 

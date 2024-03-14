@@ -1,32 +1,35 @@
 #include "SmartRefreshLayoutComponentInstance.h"
+#include "Singleton.h"
 #include <folly/dynamic.h>
 
 namespace rnoh {
 
     SmartRefreshLayoutComponentInstance::SmartRefreshLayoutComponentInstance(Context context, facebook::react::Tag tag)
         : CppComponentInstance(std::move(context), tag) {
-        m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
+        Singleton::getInstance().pullNode.setPullToRefreshNodeDelegate(this);
     }
 
     void SmartRefreshLayoutComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
                                                           std::size_t index) {
         CppComponentInstance::insertChild(childComponentInstance, index);
         if (!isListInserted) {
-            m_pullToRefreshNode.insertChild(childComponentInstance->getLocalRootArkUINode(), isListInserted);
+            Singleton::getInstance().pullNode.insertChild(childComponentInstance->getLocalRootArkUINode(),
+                                                          isListInserted);
             isListInserted = true;
         } else {
-            m_pullToRefreshNode.insertChild(childComponentInstance->getLocalRootArkUINode(), isListInserted);
+            Singleton::getInstance().pullNode.insertChild(childComponentInstance->getLocalRootArkUINode(),
+                                                          isListInserted);
         }
-        LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::insertChild> childComponentInstance"
-                  << childComponentInstance;
     }
 
     void SmartRefreshLayoutComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {
         CppComponentInstance::removeChild(childComponentInstance);
-        m_pullToRefreshNode.removeChild(childComponentInstance->getLocalRootArkUINode());
+        Singleton::getInstance().pullNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() { return m_pullToRefreshNode; }
+    PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() {
+        return Singleton::getInstance().pullNode;
+    }
 
 
     void SmartRefreshLayoutComponentInstance::setProps(facebook::react::Props::Shared props) {
@@ -37,11 +40,19 @@ namespace rnoh {
         }
         // TODO: refreshProps attributes
         headerHeight = refreshProps->headerHeight;
+
+        LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> headerHeight:" << headerHeight;
         LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> autoRefresh.refresh:"
                   << refreshProps->autoRefresh.refresh;
         LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> dragRate:" << refreshProps->dragRate;
         LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> enableRefresh:"
                   << refreshProps->enableRefresh;
+        LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> refreshProps:"
+                  << refreshProps->primaryColor;
+
+        Singleton::getInstance().pullNode.setEnableRefresh(refreshProps->enableRefresh);
+        //         Singleton::getInstance().pullNode.setMaxTranslate(refreshProps->maxDragRate);
+        //         Singleton::getInstance().pullNode.setHeaderHeight(refreshProps->headerHeight);
     }
 
     void SmartRefreshLayoutComponentInstance::setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) {
@@ -66,19 +77,21 @@ namespace rnoh {
         m_smartRefreshLayoutEventEmitter->onHeaderReleasing({percent, displayedHeaderHeight, headerHeight});
     };
 
-    void SmartRefreshLayoutComponentInstance::handleCommand(std::string const &commandName, folly::dynamic const &args){
+    void SmartRefreshLayoutComponentInstance::handleCommand(std::string const &commandName,
+                                                            folly::dynamic const &args) {
         if (commandName == "finishRefresh" && args.isArray() && args.size() == 2) {
             auto delayed = args[0];
             auto success = args[1];
             if (delayed != INFINITY) {
                 if (delayed >= 0) {
-                    m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(delayed.asInt());
+                    Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(delayed.asInt());
                 } else {
-                    m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(0);
+                    Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(0);
                 }
             } else {
-                m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(500);
+                Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(500);
             }
+            Singleton::getInstance().pullNode.finishRefresh();
         }
     };
 
