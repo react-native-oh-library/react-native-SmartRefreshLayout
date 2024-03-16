@@ -64,6 +64,8 @@ export struct SmartRefreshControl {
     private finishRefresh:(value: string | PromiseLike<string>) => void = ()=>{}
     private displayedHeaderHeight:number = 0;
     private scrollViewTag:number = -1;
+    private isRelease:boolean = false;
+
     @State data: Tag[] = this.descriptor.childrenTags
     @Builder
     private getCustomList() {
@@ -119,6 +121,7 @@ export struct SmartRefreshControl {
                         this.pullToRefreshConfigurator.setFinishDelay(500)
                     }
                     this.finishRefresh?.("finish")
+                    this.isRelease = true
                 }
             });
     }
@@ -181,12 +184,15 @@ export struct SmartRefreshControl {
             this.unlockScrollingCallback = undefined
         }
         // 下拉中
-        if (this.displayedHeaderHeight < displayedHeaderHeight) {
+        if (!this.isRelease) {
             this.onHeaderPulling(displayedHeaderHeight)
-        } else if (this.displayedHeaderHeight > displayedHeaderHeight){
+        } else {
             this.onHeaderReleasing(displayedHeaderHeight)
         }
         this.displayedHeaderHeight = displayedHeaderHeight
+        if (displayedHeaderHeight == 0){
+            this.isRelease = false
+        }
     }
 
     // 因为子节点还没创建出来，需要延迟获取RNScrollViewManager
