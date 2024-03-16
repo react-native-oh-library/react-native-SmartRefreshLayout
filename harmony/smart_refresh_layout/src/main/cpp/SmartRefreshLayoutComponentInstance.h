@@ -25,7 +25,7 @@ namespace rnoh {
         bool isListInserted{false}; // whether list child component inserted
 
     public:
-        SmartRefreshLayoutComponentInstance(Context context, facebook::react::Tag tag);
+        SmartRefreshLayoutComponentInstance(Context context);
 
         void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
 

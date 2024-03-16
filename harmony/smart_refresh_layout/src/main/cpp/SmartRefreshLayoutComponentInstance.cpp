@@ -4,8 +4,8 @@
 
 namespace rnoh {
 
-    SmartRefreshLayoutComponentInstance::SmartRefreshLayoutComponentInstance(Context context, facebook::react::Tag tag)
-        : CppComponentInstance(std::move(context), tag) {
+    SmartRefreshLayoutComponentInstance::SmartRefreshLayoutComponentInstance(Context context)
+        : CppComponentInstance(std::move(context)) {
         Singleton::getInstance().pullNode.setPullToRefreshNodeDelegate(this);
     }
 

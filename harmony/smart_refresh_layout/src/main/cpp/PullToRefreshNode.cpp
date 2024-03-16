@@ -23,7 +23,7 @@ namespace rnoh {
         auto columnHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_COLUMN);
         m_listArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
 
-        uint32_t colorValue1 = 0xFF56aa1D;
+        uint32_t colorValue1 = 0xFFFFFFFF
         ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};
         ArkUI_AttributeItem colorItem1 = {preparedColorValue1, sizeof(preparedColorValue1) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_listArkUINodeHandle, NODE_BACKGROUND_COLOR, &colorItem1);
@@ -65,12 +65,13 @@ namespace rnoh {
         LOG(INFO) << "[clx] <ssss11 PullToRefreshNode::onNodeEvent > ------kind: " << event->eventId;
         if (event->kind == ArkUI_NodeEventType::NODE_TOUCH_EVENT) {
             if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_CANCEL) {
+              
+
+            } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_DOWN) {
                 offsetY = 0;
                 downY = event->touchEvent.actionTouch.nodeY;
                 this->touchYOld = offsetY;
-
-            } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_DOWN) {
-                this->onActionEnd();
+           
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_MOVE) {
                 offsetY = event->touchEvent.actionTouch.nodeY - downY;
                 LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > offsetY: " << offsetY;
@@ -81,6 +82,7 @@ namespace rnoh {
                 }
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_UP) {
                 LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > NODE_ACTION_CANCEL";
+                 this->onActionEnd();
             }
         }
     };

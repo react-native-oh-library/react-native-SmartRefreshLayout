@@ -8,7 +8,7 @@ namespace rnoh {
         StackNode m_stackNode;
 
     public:
-        RNCAnyHeaderComponentInstance(Context context, facebook::react::Tag tag);
+        RNCAnyHeaderComponentInstance(Context context);
 
         void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
 

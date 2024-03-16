@@ -35,11 +35,11 @@ namespace rnoh {
     public:
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
-        ComponentInstance::Shared create(ComponentInstanceFactoryContext ctx) override {
+        ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
             if (ctx.componentName == "RNCAnyHeader") {
-                return std::make_shared<RNCAnyHeaderComponentInstance>(m_ctx, ctx.tag);
+                return std::make_shared<RNCAnyHeaderComponentInstance>(std::move(ctx));
             } else if (ctx.componentName == "SmartRefreshLayout") {
-                return std::make_shared<SmartRefreshLayoutComponentInstance>(m_ctx, ctx.tag);
+                return std::make_shared<SmartRefreshLayoutComponentInstance>(std::move(ctx));
             }
             return nullptr;
         }
@@ -50,7 +50,7 @@ namespace rnoh {
         SmartRefreshLayoutPackage(Package::Context ctx) : Package(ctx) {}
 
         ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
-            return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>(m_ctx);
+            return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>();
         }
 
         std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {

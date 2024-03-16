@@ -3,8 +3,8 @@
 
 namespace rnoh {
 
-    RNCAnyHeaderComponentInstance::RNCAnyHeaderComponentInstance(Context context, facebook::react::Tag tag)
-        : CppComponentInstance(std::move(context), tag) {}
+    RNCAnyHeaderComponentInstance::RNCAnyHeaderComponentInstance(Context context)
+        : CppComponentInstance(std::move(context)) {}
 
     void RNCAnyHeaderComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
                                                     std::size_t index) {
