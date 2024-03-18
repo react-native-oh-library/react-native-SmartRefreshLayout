@@ -37,9 +37,9 @@ namespace rnoh {
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
             if (ctx.componentName == "RNCAnyHeader") {
-                return std::make_shared<RNCAnyHeaderComponentInstance>(ctx);
+                return std::make_shared<RNCAnyHeaderComponentInstance>(std::move(ctx));
             } else if (ctx.componentName == "SmartRefreshLayout") {
-                return std::make_shared<SmartRefreshLayoutComponentInstance>(ctx);
+                return std::make_shared<SmartRefreshLayoutComponentInstance>(std::move(ctx));
             }
             return nullptr;
         }
