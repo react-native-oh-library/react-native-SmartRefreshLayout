@@ -23,7 +23,7 @@ namespace rnoh {
         auto columnHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_COLUMN);
         m_listArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
 
-        uint32_t colorValue1 = 0xFFFFFFFF
+        uint32_t colorValue1 = 0xFFFFFFFF;
         ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};
         ArkUI_AttributeItem colorItem1 = {preparedColorValue1, sizeof(preparedColorValue1) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_listArkUINodeHandle, NODE_BACKGROUND_COLOR, &colorItem1);
