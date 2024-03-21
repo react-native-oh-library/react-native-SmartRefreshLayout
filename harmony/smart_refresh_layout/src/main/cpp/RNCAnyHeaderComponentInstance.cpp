@@ -1,5 +1,4 @@
 #include "RNCAnyHeaderComponentInstance.h"
-#include "Singleton.h"
 
 namespace rnoh {
 
@@ -9,9 +8,7 @@ namespace rnoh {
     void RNCAnyHeaderComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
                                                     std::size_t index) {
         CppComponentInstance::insertChild(childComponentInstance, index);
-        LOG(INFO) << "[clx] <sss PullToRefreshNode33333------------ ";
-      //  m_stackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
-        Singleton::getInstance().pullNode.insertHeaderChild(childComponentInstance->getLocalRootArkUINode());
+        m_stackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
     }
 
     void RNCAnyHeaderComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {

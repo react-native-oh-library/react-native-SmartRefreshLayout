@@ -1,34 +1,43 @@
 #include "SmartRefreshLayoutComponentInstance.h"
-#include "Singleton.h"
 #include <folly/dynamic.h>
+#include "RNOH/arkui/ArkUINode.h"
 
 namespace rnoh {
 
     SmartRefreshLayoutComponentInstance::SmartRefreshLayoutComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {
-        Singleton::getInstance().pullNode.setPullToRefreshNodeDelegate(this);
+
+        m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
+        m_pullToRefreshNode.insertChild(m_listStackNode, 1);
+        m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
+        m_headerStackNode.setHeight(facebook::react::Size({0, 0}));
+        //         m_headerStackNode.setBackgroundColor(0xFF6495ED);
+        ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
+        ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
+        NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
     }
 
     void SmartRefreshLayoutComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
                                                           std::size_t index) {
         CppComponentInstance::insertChild(childComponentInstance, index);
-        if (!isListInserted) {
-            Singleton::getInstance().pullNode.insertChild(childComponentInstance->getLocalRootArkUINode(),
-                                                          isListInserted);
-            isListInserted = true;
+        if (!isHeaderInserted) {
+            m_headerStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
+
+            isHeaderInserted = true;
         } else {
-            Singleton::getInstance().pullNode.insertChild(childComponentInstance->getLocalRootArkUINode(),
-                                                          isListInserted);
+            m_listStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
         }
     }
 
     void SmartRefreshLayoutComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {
         CppComponentInstance::removeChild(childComponentInstance);
-        Singleton::getInstance().pullNode.removeChild(childComponentInstance->getLocalRootArkUINode());
+        m_headerStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
+        m_listStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
     PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() {
-        return Singleton::getInstance().pullNode;
+        //         return Singleton::getInstance().pullNode;
+        return m_pullToRefreshNode;
     }
 
 
@@ -50,9 +59,7 @@ namespace rnoh {
         LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::setProps> refreshProps:"
                   << refreshProps->primaryColor;
 
-        Singleton::getInstance().pullNode.setEnableRefresh(refreshProps->enableRefresh);
-        //         Singleton::getInstance().pullNode.setMaxTranslate(refreshProps->maxDragRate);
-        //         Singleton::getInstance().pullNode.setHeaderHeight(refreshProps->headerHeight);
+        m_pullToRefreshNode.setEnableRefresh(refreshProps->enableRefresh);
     }
 
     void SmartRefreshLayoutComponentInstance::setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) {
@@ -84,14 +91,14 @@ namespace rnoh {
             auto success = args[1];
             if (delayed != INFINITY) {
                 if (delayed >= 0) {
-                    Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(delayed.asInt());
+                    m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(delayed.asInt());
                 } else {
-                    Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(0);
+                    m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(0);
                 }
             } else {
-                Singleton::getInstance().pullNode.getPullToRefreshConfigurator().setFinishDelay(500);
+                m_pullToRefreshNode.getPullToRefreshConfigurator().setFinishDelay(500);
             }
-            Singleton::getInstance().pullNode.finishRefresh();
+            m_pullToRefreshNode.finishRefresh();
         }
     };
 

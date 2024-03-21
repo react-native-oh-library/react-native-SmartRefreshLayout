@@ -2,14 +2,16 @@
 #include "Props.h"
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
-#include "RNOH/arkui/TextNode.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
 
 namespace rnoh {
     class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
     private:
-       // PullToRefreshNode m_pullToRefreshNode;
+        PullToRefreshNode m_pullToRefreshNode;
+        StackNode m_headerStackNode;
+        StackNode m_listStackNode;
+
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
 
         bool overScrollBounce{true};
@@ -22,7 +24,7 @@ namespace rnoh {
         facebook::react::SharedColor primaryColor{};
         facebook::react::SmartRefreshLayoutAutoRefreshStruct autoRefresh{};
 
-        bool isListInserted{false}; // whether list child component inserted
+        bool isHeaderInserted{false}; // whether list child component inserted
 
     public:
         SmartRefreshLayoutComponentInstance(Context context);

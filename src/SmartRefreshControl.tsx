@@ -160,7 +160,7 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
     }
 
     // @ts-ignore
-    if (typeof this.props.children?.props === "object" && Platform.OS === 'harmony') {
+    if (Platform.OS === 'harmony') {
       // @ts-ignore
       this.props.children.props.bounces = false;
     }
@@ -172,8 +172,8 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
         {...nativeProps}
         {...this._panResponder?.panHandlers}
       >
-        {this.props.children}
         {this.renderHeader()}
+        {this.props.children}
       </RNCSmartRefreshLayout>
     );
   }

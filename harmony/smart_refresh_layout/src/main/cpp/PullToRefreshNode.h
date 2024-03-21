@@ -57,13 +57,12 @@ namespace rnoh {
 
         float getDisplayedHeaderHeight() { return trYTop; }
 
-        void insertChild(ArkUINode &child, bool &isHeader);
-        void insertHeaderChild(ArkUINode &child);
+        void insertChild(ArkUINode &child, std::size_t index);
+
         void removeChild(ArkUINode &child);
-        //         ArkUINode &setPosition(facebook::react::Point const &position) override;
-    
+
         void onNodeEvent(ArkUI_NodeEvent *event) override;
-    
+
         void setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate);
 
         void onActionUpdate(ArkUI_NodeTouchPoint const &event);

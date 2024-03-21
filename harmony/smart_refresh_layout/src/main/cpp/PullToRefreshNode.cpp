@@ -1,8 +1,5 @@
 #include "PullToRefreshNode.h"
-#include <bits/alltypes.h>
 #include <glog/logging.h>
-#include <linux/pkt_sched.h>
-#include <sys/stat.h>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -18,40 +15,6 @@ namespace rnoh {
         ArkUI_NumberValue columnFlexValue[] = {{.i32 = ARKUI_FLEX_ALIGNMENT_CENTER}};
         ArkUI_AttributeItem columnFlexItem = {columnFlexValue, sizeof(columnFlexValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_COLUMN_JUSTIFY_CONTENT, &columnFlexItem);
-
-        m_headerArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
-        auto columnHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_COLUMN);
-        m_listArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
-
-        uint32_t colorValue1 = 0xFFFFFFFF;
-        ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};
-        ArkUI_AttributeItem colorItem1 = {preparedColorValue1, sizeof(preparedColorValue1) / sizeof(ArkUI_NumberValue)};
-        NativeNodeApi::getInstance()->setAttribute(m_listArkUINodeHandle, NODE_BACKGROUND_COLOR, &colorItem1);
-
-        ArkUI_NumberValue clipValues[] = {true};
-        ArkUI_AttributeItem clipValue = {clipValues, 1};
-        NativeNodeApi::getInstance()->setAttribute(m_listArkUINodeHandle, NODE_CLIP, &clipValue);
-
-
-        ArkUI_NumberValue heightNumberValue[] = {static_cast<float>(trYTop)};
-        ArkUI_AttributeItem heightItem = {heightNumberValue, 1};
-        LOG(INFO) << "[clx] <PullToRefreshNode::animateWithCubicBezier> AnimationCallBack111 cal: " << trYTop;
-        NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_HEIGHT, &heightItem);
-
-        //         uint32_t colorValue2 = 0xFF6495ED;
-        //         ArkUI_NumberValue preparedColorValue2[] = {{.u32 = colorValue2}};
-        //         ArkUI_AttributeItem colorItem2 = {preparedColorValue2, sizeof(preparedColorValue2) /
-        //         sizeof(ArkUI_NumberValue)}; NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle,
-        //         NODE_BACKGROUND_COLOR, &colorItem2);
-
-        ArkUI_NumberValue alignments[] = {{.u32 = ARKUI_ALIGNMENT_BOTTOM}};
-        ArkUI_AttributeItem alignment = {alignments, sizeof(alignments) / sizeof(ArkUI_NumberValue)};
-        NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_STACK_ALIGN_CONTENT, &alignment);
-
-
-        NativeNodeApi::getInstance()->addChild(m_nodeHandle, m_headerArkUINodeHandle);
-        NativeNodeApi::getInstance()->addChild(columnHandle, m_listArkUINodeHandle);
-        NativeNodeApi::getInstance()->addChild(m_nodeHandle, columnHandle);
     }
 
     PullToRefreshNode::~PullToRefreshNode() {
@@ -65,13 +28,13 @@ namespace rnoh {
         LOG(INFO) << "[clx] <ssss11 PullToRefreshNode::onNodeEvent > ------kind: " << event->eventId;
         if (event->kind == ArkUI_NodeEventType::NODE_TOUCH_EVENT) {
             if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_CANCEL) {
-              
+
 
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_DOWN) {
                 offsetY = 0;
                 downY = event->touchEvent.actionTouch.nodeY;
                 this->touchYOld = offsetY;
-           
+
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_MOVE) {
                 offsetY = event->touchEvent.actionTouch.nodeY - downY;
                 LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > offsetY: " << offsetY;
@@ -82,7 +45,7 @@ namespace rnoh {
                 }
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_UP) {
                 LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > NODE_ACTION_CANCEL";
-                 this->onActionEnd();
+                this->onActionEnd();
             }
         }
     };
@@ -237,32 +200,25 @@ namespace rnoh {
         }
     }
 
-    void PullToRefreshNode::insertChild(ArkUINode &child, bool &isListInserted) {
-        if (!isListInserted) {
-            maybeThrow(NativeNodeApi::getInstance()->addChild(m_listArkUINodeHandle, child.getArkUINodeHandle()));
-        } else {
-            maybeThrow(NativeNodeApi::getInstance()->addChild(m_headerArkUINodeHandle, child.getArkUINodeHandle()));
+    void PullToRefreshNode::insertChild(ArkUINode &child, std::size_t index) {
+        maybeThrow(NativeNodeApi::getInstance()->addChild(m_nodeHandle, child.getArkUINodeHandle()));
+        if (index == 0) {
+            m_headerArkUINodeHandle = child.getArkUINodeHandle();
+        } else if (index == 1) {
+            m_listArkUINodeHandle = child.getArkUINodeHandle();
         }
     }
-    void PullToRefreshNode::insertHeaderChild(ArkUINode &child) {
-        auto rn_headerHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
-        maybeThrow(NativeNodeApi::getInstance()->addChild(rn_headerHandle, child.getArkUINodeHandle()));
-        maybeThrow(NativeNodeApi::getInstance()->addChild(m_headerArkUINodeHandle, rn_headerHandle));
+
+    void PullToRefreshNode::removeChild(ArkUINode &child) {
+        maybeThrow(NativeNodeApi::getInstance()->removeChild(m_nodeHandle, child.getArkUINodeHandle()));
+        if (m_headerArkUINodeHandle == child.getArkUINodeHandle()) {
+            m_headerArkUINodeHandle = nullptr;
+        } else {
+            m_listArkUINodeHandle = nullptr;
+        }
     }
 
     void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator.setHasRefresh(enable); }
     void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator.setMaxTranslate(maxHeight); }
 
-    void PullToRefreshNode::removeChild(ArkUINode &child) {
-
-        if (m_listArkUINodeHandle != nullptr) {
-            NativeNodeApi::getInstance()->removeChild(m_listArkUINodeHandle, child.getArkUINodeHandle());
-            m_listArkUINodeHandle = nullptr;
-            return;
-        }
-        if (m_headerArkUINodeHandle != nullptr) {
-            NativeNodeApi::getInstance()->removeChild(m_headerArkUINodeHandle, child.getArkUINodeHandle());
-            m_headerArkUINodeHandle = nullptr;
-        }
-    }
 } // namespace rnoh
