@@ -68,7 +68,7 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
   findNode = () => {
     return findNodeHandle(this.smartRefreshLayout);
   };
-  componentWillMount() {
+  componentDidMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
         if (this.shiftPercent >= 0.039 || this.footerShiftPercent >= 0.068) {
