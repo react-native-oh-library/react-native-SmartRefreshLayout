@@ -160,7 +160,7 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
     }
 
     // @ts-ignore
-    if (Platform.OS === 'harmony') {
+    if (typeof this.props.children?.props === "object" && Platform.OS === 'harmony') {
       // @ts-ignore
       this.props.children.props.bounces = false;
     }
