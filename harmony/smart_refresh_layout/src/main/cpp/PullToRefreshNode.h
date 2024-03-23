@@ -3,6 +3,7 @@
 #include "RNOH/arkui/ArkUINode.h"
 #include "PullToRefreshConfigurator.h"
 #include "Animation.h"
+#include "react/renderer/graphics/Color.h"
 
 const int IS_FREE = 0;
 const int IS_PULL_DOWN_1 = 11;
@@ -21,6 +22,11 @@ namespace rnoh {
         virtual void onRefresh(){};
         virtual void onHeaderPulling(const float &displayedHeaderHeight){};
         virtual void onHeaderReleasing(const float &displayedHeaderHeight){};
+        virtual void onHeaderMoving(const float &displayedHeaderHeight){};
+        virtual void onPullDownToRefresh(){};
+        virtual void onHeaderReleased(){};
+        virtual void onReleaseToRefresh(){};
+        virtual bool  isComponentTop(){};
     };
 
     class PullToRefreshNode : public ArkUINode {
@@ -80,7 +86,7 @@ namespace rnoh {
         void setHeaderHeight(float h);
         void setEnableRefresh(bool enable);
         void setMaxTranslate(float maxHeight);
-
+        void setHeaderBackgroundColor(facebook::react::SharedColor &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
     };
 

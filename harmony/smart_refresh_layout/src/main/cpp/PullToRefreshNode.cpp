@@ -23,18 +23,24 @@ namespace rnoh {
 
     void PullToRefreshNode::setHeaderHeight(float h) { mHeight = h; }
 
-
     void PullToRefreshNode::onNodeEvent(ArkUI_NodeEvent *event) {
         LOG(INFO) << "[clx] <ssss11 PullToRefreshNode::onNodeEvent > ------kind: " << event->eventId;
+        if (!refreshConfigurator.getHasRefresh() || !m_pullToRefreshNodeDelegate->isComponentTop()) {
+            return;
+        }
         if (event->kind == ArkUI_NodeEventType::NODE_TOUCH_EVENT) {
             if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_CANCEL) {
 
 
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_DOWN) {
+                if (refreshConfigurator.getHasRefresh()) {
+                    if (m_pullToRefreshNodeDelegate != nullptr) {
+                        m_pullToRefreshNodeDelegate->onPullDownToRefresh();
+                    }
+                }
                 offsetY = 0;
                 downY = event->touchEvent.actionTouch.nodeY;
                 this->touchYOld = offsetY;
-
             } else if (event->touchEvent.action == ArkUI_NodeTouchEventAction::NODE_ACTION_MOVE) {
                 offsetY = event->touchEvent.actionTouch.nodeY - downY;
                 LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > offsetY: " << offsetY;
@@ -63,7 +69,9 @@ namespace rnoh {
             auto loadImgHeight = refreshConfigurator.getLoadImgHeight();
             auto refreshHeight = refreshConfigurator.getRefreshHeight();
             touchYNew = offsetY;
-
+            if (!m_pullToRefreshNodeDelegate->isComponentTop()) {
+                return;
+            }
             // whether pan down
             auto isPullAction = (touchYNew - touchYOld) > 0;
 
@@ -154,10 +162,15 @@ namespace rnoh {
     }
     void PullToRefreshNode::finishRefresh() {
         state = IS_REFRESHED;
+        LOG(INFO) << "[tyBrave1] finishRefresh";
         closeRefresh();
     }
 
     void PullToRefreshNode::closeRefresh() {
+        LOG(INFO) << "[tyBrave1] closeRefresh trYTop: " << trYTop << state;
+        if (trYTop == 0) {
+            return;
+        }
         if (animation != nullptr &&
             (animation->GetAnimationStatus() == ANIMATION_START || animation->GetAnimationStatus() == ANIMATION_RUN)) {
             LOG(INFO) << "[clx] <PullToRefreshNode::animateWithCubicBezier> closeRefresh return";
@@ -169,8 +182,7 @@ namespace rnoh {
         animation->SetAnimationParams(
             static_cast<std::chrono::milliseconds>(refreshConfigurator.getAnimDuration()), trYTop, 0,
             [this](double value) {
-                //           if (state == IS_FREE || state == IS_PULL_DOWN_1 || state == IS_PULL_DOWN_2) {
-                trYTop = value;
+                trYTop = value < 0 ? 0 : value;
                 LOG(INFO) << "[clx] <PullToRefreshNode::animateWithCubicBezier> AnimationCallBack3333 cal: " << trYTop
                           << ";value:" << value;
                 ArkUI_NumberValue heightNumberValue[] = {trYTop};
@@ -182,8 +194,9 @@ namespace rnoh {
                     auto size = itemProps->size;
                     const ArkUI_NumberValue *value = itemProps->value;
                     auto pp = value[size - 1];
-                    LOG(INFO) << "[clx] <PullToRefreshNode::animateWithCubicBezier> AnimationCallBack3333 size: "
-                              << size << ";value:" << pp.f32;
+                    LOG(INFO)
+                        << "[clx] <PullToRefreshNode::animateWithCubicBezier> AnimationCallBack3333 headerHeight: "
+                        << pp.f32;
                     //          }
                 }
             });
@@ -201,12 +214,15 @@ namespace rnoh {
     }
 
     void PullToRefreshNode::insertChild(ArkUINode &child, std::size_t index) {
-        maybeThrow(NativeNodeApi::getInstance()->addChild(m_nodeHandle, child.getArkUINodeHandle()));
         if (index == 0) {
             m_headerArkUINodeHandle = child.getArkUINodeHandle();
+            ArkUI_NumberValue alignments[] = {{.u32 = ARKUI_ALIGNMENT_BOTTOM}};
+            ArkUI_AttributeItem alignment = {alignments, sizeof(alignments) / sizeof(ArkUI_NumberValue)};
+            NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_STACK_ALIGN_CONTENT, &alignment);
         } else if (index == 1) {
             m_listArkUINodeHandle = child.getArkUINodeHandle();
         }
+        maybeThrow(NativeNodeApi::getInstance()->insertChildAt(m_nodeHandle, child.getArkUINodeHandle(), index));
     }
 
     void PullToRefreshNode::removeChild(ArkUINode &child) {
@@ -220,5 +236,11 @@ namespace rnoh {
 
     void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator.setHasRefresh(enable); }
     void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator.setMaxTranslate(maxHeight); }
+    void PullToRefreshNode::setHeaderBackgroundColor(facebook::react::SharedColor &color) {
+        uint32_t colorValue1 = color;
+        ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};
+        ArkUI_AttributeItem colorItem1 = {preparedColorValue1, sizeof(preparedColorValue1) / sizeof(ArkUI_NumberValue)};
+        NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_BACKGROUND_COLOR, &colorItem1);
+    }
 
 } // namespace rnoh

@@ -23,35 +23,45 @@
 
 namespace rnoh {
 
-class SmartRefreshLayoutEmitRequestHandler : public EventEmitRequestHandler {
-public:
-    void handleEvent(EventEmitRequestHandler::Context const &ctx) override
-    {
-        ArkJS arkJs(ctx.env);
-        auto eventName = ctx.eventName;
-        auto eventEmitter =
-            ctx.shadowViewRegistry->getEventEmitter<facebook::react::SmartRefreshLayoutEventEmitter>(ctx.tag);
-        if (eventEmitter == nullptr) {
-            return;
+    class SmartRefreshLayoutEmitRequestHandler : public EventEmitRequestHandler {
+    public:
+        void handleEvent(EventEmitRequestHandler::Context const &ctx) override {
+            ArkJS arkJs(ctx.env);
+            auto eventName = ctx.eventName;
+            auto eventEmitter =
+                ctx.shadowViewRegistry->getEventEmitter<facebook::react::SmartRefreshLayoutEventEmitter>(ctx.tag);
+            if (eventEmitter == nullptr) {
+                return;
+            }
+            if (eventName == "onRefresh") {
+                eventEmitter->onRefresh({});
+            } else if (eventName == "onHeaderPulling") {
+                float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
+                float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
+                float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
+                facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderPulling event{percent, offset, headerHeight};
+                eventEmitter->onHeaderPulling(event);
+            } else if (eventName == "onHeaderReleasing") {
+                float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
+                float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
+                float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
+                facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderReleasing event{percent, offset, headerHeight};
+                eventEmitter->onHeaderReleasing(event);
+            } else if (eventName == "onHeaderMoving") {
+                float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
+                float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
+                float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
+                facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderMoving event{percent, offset, headerHeight};
+                eventEmitter->onHeaderMoving(event);
+            } else if (eventName == "onPullDownToRefresh") {
+                eventEmitter->onPullDownToRefresh({});
+            } else if (eventName == "onReleaseToRefresh") {
+                eventEmitter->onReleaseToRefresh({});
+            } else if (eventName == "onHeaderReleased") {
+                eventEmitter->onHeaderReleased({});
+            }
         }
-
-        if (eventName == "onRefresh") {
-            eventEmitter->onRefresh({});
-        }  else if (eventName == "onHeaderPulling") {
-            float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
-            float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
-            float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
-            facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderPulling event{percent, offset, headerHeight};
-            eventEmitter->onHeaderPulling(event);
-        } else if (eventName == "onHeaderReleasing") {
-            float percent = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "percent"));
-            float offset = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "offset"));
-            float headerHeight = (float)arkJs.getDouble(arkJs.getObjectProperty(ctx.payload, "headerHeight"));
-            facebook::react::SmartRefreshLayoutEventEmitter::OnHeaderReleasing event{percent, offset, headerHeight};
-            eventEmitter->onHeaderReleasing(event);
-        }
-    }
-};
+    };
 
 } // namespace rnoh
 #endif

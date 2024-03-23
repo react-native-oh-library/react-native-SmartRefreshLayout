@@ -29,10 +29,10 @@ public:
 
     void SetAnimationParams(std::chrono::milliseconds durationSeconds, double startValue, double endValue,
                             std::function<void(double)> callback) {
-        duration_ = durationSeconds; //150
-        currentValue_ = startValue; //50
-        targetValue_ = endValue;   // 0
-        startValue_ = startValue;  //50
+        duration_ = durationSeconds; // 150
+        currentValue_ = startValue;  // 50
+        targetValue_ = endValue;     // 0
+        startValue_ = startValue;    // 50
         callback_ = callback;
         if (!callback_) {
             throw std::invalid_argument("Callback cannot be null");
@@ -47,16 +47,14 @@ public:
         startTime_ = std::chrono::steady_clock::now();
         // 启动更新线程
         updateThread_ = new std::thread(&Animation::UpdateLoop, this);
-        //         updateThread_ = new std::thread(&Animation::Animate, this);
     }
-    
+
     void UpdateLoop() {
         state_ = Animation_State::ANIMATION_RUN;
         LOG(INFO) << "[tyBrave] Animation startValue_: " << startValue_ << ";currentValue_:" << currentValue_;
         const double p0 = 0.1, p1 = 0.0, p2 = 0.58, p3 = 1.0; // CubicBezier控制点
         auto startTime = std::chrono::high_resolution_clock::now();
         for (double t = 0.0; t < 1.01; t += 0.01) {
-            LOG(INFO) << "[tyBrave1] Animation progress: " << ";t:" << t;
             // 逐步增加t的值来模拟动画进度
             double progress = cubicBezier(t, p0, p1, p2, p3); // 计算CubicBezier曲线上的点作为进度
             currentValue_ = startValue_ + (targetValue_ - startValue_) * progress; // 根据进度计算当前值
@@ -65,30 +63,13 @@ public:
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime);
             if (elapsed < duration_ * progress) {
-                std::this_thread::sleep_for((duration_ * progress - elapsed) * 0.1);
+                std::this_thread::sleep_for((duration_ * progress - elapsed) * 0.05);
             }
             startTime = currentTime; // 重置开始时间以计算下一帧的延迟
         }
         callback_(targetValue_);
         state_ = Animation_State::ANIMATION_FINISH;
-    }
-
-    float Animate() {
-        std::chrono::milliseconds stepTime(10); // 每步的时间间隔（毫秒）
-        double totalDurationMilliseconds = static_cast<double>(duration_.count());
-        for (double elapsedTimeMilliseconds = 0; elapsedTimeMilliseconds < totalDurationMilliseconds;
-             elapsedTimeMilliseconds += stepTime.count()) {
-            // 计算当前时间比例
-            double t = static_cast<double>(elapsedTimeMilliseconds) / totalDurationMilliseconds;
-
-            // 使用CubicBezier计算当前值
-            double progress = cubicBezier(t, 0.1, 0.0, 0.58, 1.0);
-            currentValue_ = startValue_ + (targetValue_ - startValue_) * progress;
-            callback_(currentValue_);
-            // 等待一段时间以模拟动画的逐步进行
-            std::this_thread::sleep_for(stepTime);
-        }
-        callback_(targetValue_);
+        cancelAnimation();
     }
 
 
@@ -115,6 +96,7 @@ private:
             delete updateThread_; // 如果使用new分配，则需要delete释放
             updateThread_ = nullptr;
         }
+        LOG(INFO) << "[tyBrave] Animation startValue_ssss cancelAnimation end";
     }
 };
 #endif // HARMONY_ANIMATION_H

@@ -2,11 +2,13 @@
 #include "Props.h"
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
+#import "RNOH/arkui/ArkUINodeRegistry.h"
+#import "RNOH/arkui/NativeNodeApi.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
 
 namespace rnoh {
-    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
+    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate, public TouchEventHandler {
     private:
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
@@ -29,12 +31,18 @@ namespace rnoh {
     public:
         SmartRefreshLayoutComponentInstance(Context context);
 
+        void onTouchEvent(ArkUI_NodeTouchEvent e) override;
+
         void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
 
         void removeChild(ComponentInstance::Shared childComponentInstance) override;
 
         void setProps(facebook::react::Props::Shared props) override;
-
+    
+        bool  isComponentTop() override;
+    
+        void setParent(ComponentInstance::Shared parent) override;
+    
         PullToRefreshNode &getLocalRootArkUINode() override;
 
         void setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) override;
@@ -44,7 +52,10 @@ namespace rnoh {
         void onHeaderPulling(const float &displayedHeaderHeight) override;
 
         void onHeaderReleasing(const float &displayedHeaderHeight) override;
-
+        void onHeaderMoving(const float &displayedHeaderHeight) override;
+        void onPullDownToRefresh() override;
+        void onReleaseToRefresh() override;
+        void onHeaderReleased() override;
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
     };
 } // namespace rnoh
