@@ -1,4 +1,5 @@
 #pragma once
+#include "Animation.h"
 #include "Props.h"
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
@@ -8,7 +9,7 @@
 #include "EventEmitters.h"
 
 namespace rnoh {
-    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate, public TouchEventHandler {
+    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
     private:
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
@@ -25,37 +26,45 @@ namespace rnoh {
         facebook::react::Float maxDragRate{2.0};
         facebook::react::SharedColor primaryColor{};
         facebook::react::SmartRefreshLayoutAutoRefreshStruct autoRefresh{};
-
         bool isHeaderInserted{false}; // whether list child component inserted
+        float trYTop{0.0};
+        int32_t state{IS_FREE};
+        int32_t touchYOld{0};
+        int32_t touchYNew{0};
+        int32_t downY{0};   // first down touch on Y
+        int32_t offsetY{0}; // pan offset on Y
+        Animation *animation{nullptr};
 
     public:
         SmartRefreshLayoutComponentInstance(Context context);
-
-        void onTouchEvent(ArkUI_NodeTouchEvent e) override;
 
         void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
 
         void removeChild(ComponentInstance::Shared childComponentInstance) override;
 
         void setProps(facebook::react::Props::Shared props) override;
-    
-        bool  isComponentTop() override;
-    
-        void setParent(ComponentInstance::Shared parent) override;
-    
+
+        bool isComponentTop() override;
+
         PullToRefreshNode &getLocalRootArkUINode() override;
 
         void setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) override;
 
+        void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);
+        float getTranslateYOfRefresh(float newTranslateY);
+        void onActionUpdate();
+        void onActionEnd();
+        void closeRefresh(float start, float target, int32_t duration);
+        void finishRefresh();
+
         void onRefresh() override;
-
         void onHeaderPulling(const float &displayedHeaderHeight) override;
-
         void onHeaderReleasing(const float &displayedHeaderHeight) override;
         void onHeaderMoving(const float &displayedHeaderHeight) override;
         void onPullDownToRefresh() override;
         void onReleaseToRefresh() override;
         void onHeaderReleased() override;
+
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
     };
 } // namespace rnoh

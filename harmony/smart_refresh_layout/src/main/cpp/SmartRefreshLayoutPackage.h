@@ -67,8 +67,6 @@ namespace rnoh {
                 //                  facebook::react::RNCStoreHouseHeaderComponentDescriptor>(),
                 //              facebook::react::concreteComponentDescriptorProvider<
                 //                  facebook::react::RNCClassicsHeaderComponentDescriptor>(),
-
-
             };
         }
 
