@@ -32,7 +32,7 @@
 namespace rnoh {
 
     class SmartRefreshLayoutPackageComponentInstanceFactoryDelegate : public ComponentInstanceFactoryDelegate {
-    public:
+      public:
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
@@ -50,7 +50,7 @@ namespace rnoh {
         SmartRefreshLayoutPackage(Package::Context ctx) : Package(ctx) {}
 
         ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
-            return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>(m_ctx);
+            return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>();
         }
 
         std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {

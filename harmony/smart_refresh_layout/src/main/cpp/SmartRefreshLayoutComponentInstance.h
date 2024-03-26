@@ -7,9 +7,10 @@
 #import "RNOH/arkui/NativeNodeApi.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
+#include "ShadowNodes.h"
 
 namespace rnoh {
-    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
+    class SmartRefreshLayoutComponentInstance : public CppComponentInstance<facebook::react::SmartRefreshLayoutShadowNode>, public PullToRefreshNodeDelegate {
     private:
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
@@ -38,18 +39,16 @@ namespace rnoh {
     public:
         SmartRefreshLayoutComponentInstance(Context context);
 
-        void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
+        void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
 
-        void removeChild(ComponentInstance::Shared childComponentInstance) override;
+         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
 
-        void setProps(facebook::react::Props::Shared props) override;
+        void onPropsChanged(SharedConcreteProps const &props) override;
 
         bool isComponentTop() override;
 
         PullToRefreshNode &getLocalRootArkUINode() override;
-
-        void setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) override;
-
+    
         void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);
         float getTranslateYOfRefresh(float newTranslateY);
         void onActionUpdate();

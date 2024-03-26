@@ -7,9 +7,10 @@
 #pragma once
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
+#include "ShadowNodes.h"
 
 namespace rnoh {
-    class RNCDefaultHeaderComponentInstance : public CppComponentInstance {
+    class RNCDefaultHeaderComponentInstance : public CppComponentInstance<facebook::react::RNCDefaultHeaderShadowNode> {
 
     private:
         StackNode m_stackNode;
@@ -17,9 +18,8 @@ namespace rnoh {
     public:
         RNCDefaultHeaderComponentInstance(Context context);
 
-        void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
-
-        void removeChild(ComponentInstance::Shared childComponentInstance) override;
+        void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
+        void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
 
         StackNode &getLocalRootArkUINode() override;
     };
