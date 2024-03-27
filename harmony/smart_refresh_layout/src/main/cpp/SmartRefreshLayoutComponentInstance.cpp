@@ -21,7 +21,6 @@ namespace rnoh {
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
-
         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     }
 
@@ -179,6 +178,7 @@ namespace rnoh {
                                           m_pullToRefreshNode.setHeaderHeight(trYTop);
                                           if (trYTop == 0) {
                                               state = IS_FREE;
+                                              m_pullToRefreshNode.markDirty();
                                           }
                                       });
         if (animation->GetAnimationStatus() == ANIMATION_FREE || animation->GetAnimationStatus() == ANIMATION_FINISH) {
@@ -203,8 +203,17 @@ namespace rnoh {
         }
         return false;
     };
-
-
+    void SmartRefreshLayoutComponentInstance::setNativeResponderBlocked(bool blocked) {
+        std::vector<ComponentInstance::Shared> child = getChildren();
+        for (ComponentInstance::Shared c : child) {
+            if (c->getComponentName() == "ScrollView") {
+                auto scrollView = std::dynamic_pointer_cast<rnoh::ScrollViewComponentInstance>(c);
+                if (blocked) {
+                    scrollView->setNativeResponderBlocked(!blocked);
+                }
+            }
+        }
+    }
     void SmartRefreshLayoutComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         CppComponentInstance::onPropsChanged(props);
         if (props == nullptr) {

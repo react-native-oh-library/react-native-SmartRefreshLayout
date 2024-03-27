@@ -69,7 +69,6 @@ public:
         }
         callback_(targetValue_);
         state_ = Animation_State::ANIMATION_FINISH;
-        cancelAnimation();
     }
 
 

@@ -10,7 +10,9 @@
 #include "ShadowNodes.h"
 
 namespace rnoh {
-    class SmartRefreshLayoutComponentInstance : public CppComponentInstance<facebook::react::SmartRefreshLayoutShadowNode>, public PullToRefreshNodeDelegate {
+    class SmartRefreshLayoutComponentInstance
+        : public CppComponentInstance<facebook::react::SmartRefreshLayoutShadowNode>,
+          public PullToRefreshNodeDelegate {
     private:
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
@@ -41,14 +43,14 @@ namespace rnoh {
 
         void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
 
-         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
+        void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
 
         void onPropsChanged(SharedConcreteProps const &props) override;
 
         bool isComponentTop() override;
 
         PullToRefreshNode &getLocalRootArkUINode() override;
-    
+        void setNativeResponderBlocked(bool blocked) override;
         void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);
         float getTranslateYOfRefresh(float newTranslateY);
         void onActionUpdate();

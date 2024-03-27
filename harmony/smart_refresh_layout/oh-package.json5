@@ -6,7 +6,7 @@
   "name": "rnoh-smartrefreshlayout",
   "description": "Please describe the basic information.",
   "main": "index.ets",
-  "version": "0.6.7-0.2.7",
+  "version": "0.6.7-0.2.8",
   "dependencies": {
     "rnoh": "file:../rnoh"
   },
