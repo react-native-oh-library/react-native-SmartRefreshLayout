@@ -1,6 +1,6 @@
 #include "PullToRefreshNode.h"
 #include <glog/logging.h>
-#include <arkui/native_node.h>
+// #include <arkui/native_node.h>
 #include "RNOH/arkui/NativeNodeApi.h"
 
 namespace rnoh {

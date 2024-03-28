@@ -4,9 +4,9 @@
 #include "RNOH/arkui/ScrollNode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
 #include "react/renderer/graphics/Color.h"
-#include <arkui/native_interface.h>
-#include <arkui/native_node.h>
-#include <arkui/native_gesture.h>
+// #include <arkui/native_interface.h>
+// #include <arkui/native_node.h>
+// #include <arkui/native_gesture.h>
 #include "RNOH/arkui/NativeNodeApi.h"
 
 namespace rnoh {
@@ -23,7 +23,11 @@ namespace rnoh {
         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
 
-        panGesture(m_pullToRefreshNode.getArkUINodeHandle());
+
+        ArkUINodeRegistry::getInstance().registerTouchHandler(&m_pullToRefreshNode, this);
+        NativeNodeApi::getInstance()->registerNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_TOUCH_EVENT, 0);
+
+        //         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     }
 
 
@@ -47,36 +51,35 @@ namespace rnoh {
 
     PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() { return m_pullToRefreshNode; }
 
-    void SmartRefreshLayoutComponentInstance::panGesture(ArkUI_NodeHandle arkUI_NodeHandle) {
-        auto gestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(OH_ArkUI_GetNativeAPI(ARKUI_NATIVE_GESTURE, 1));
-        auto panGesture = gestureApi->createPanGesture(1, GESTURE_DIRECTION_VERTICAL, 5);
-        auto onPanActionCallBack = [](ArkUI_GestureEvent *event, void *extraParam) {
-            SmartRefreshLayoutComponentInstance *instance = (SmartRefreshLayoutComponentInstance *)extraParam;
-            if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh() ||
-                !instance->isComponentTop()) {
-                return;
+    void SmartRefreshLayoutComponentInstance::onTouchEvent(ArkUI_NodeTouchEvent e) {
+        LOG(INFO) << "[clx] <SmartRefreshLayoutComponentInstance::onTouchEvent> nodeY :" << e.actionTouch.nodeY
+                  << "; action:" << e.action;
+        if (!m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh()) {
+            return;
+        }
+        if (e.action == ArkUI_NodeTouchEventAction::NODE_ACTION_CANCEL) {
+        
+        } else if (e.action == ArkUI_NodeTouchEventAction::NODE_ACTION_DOWN) {
+            if (m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh()) {
+                onPullDownToRefresh();
             }
-            ArkUI_GestureEventActionType actionType = OH_ArkUI_GestureEvent_GetActionType(event);
-            if (actionType == GESTURE_EVENT_ACTION_ACCEPT) {
-                instance->offsetY = 0;
-                instance->downY = OH_ArkUI_PanGesture_GetOffsetY(event);
-                instance->touchYOld = instance->offsetY;
-            } else if (actionType == GESTURE_EVENT_ACTION_UPDATE) {
-                instance->offsetY = OH_ArkUI_PanGesture_GetOffsetY(event) - instance->downY;
-                if (instance->offsetY >= 0) {
-                    instance->onActionUpdate();
-                } else {
-                    instance->onActionEnd();
-                }
-            } else if (actionType == GESTURE_EVENT_ACTION_END) {
-                instance->onActionEnd();
+            offsetY = 0;
+            downY = e.actionTouch.nodeY;
+            this->touchYOld = offsetY;
+        } else if (e.action == ArkUI_NodeTouchEventAction::NODE_ACTION_MOVE) {
+            offsetY = e.actionTouch.nodeY - downY;
+            LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > offsetY: " << offsetY;
+            if (offsetY > 0) {
+                this->onActionUpdate();
+            } else {
+                this->onActionEnd();
             }
-        };
-        gestureApi->setGestureEventTarget(
-            panGesture, GESTURE_EVENT_ACTION_ACCEPT | GESTURE_EVENT_ACTION_UPDATE | GESTURE_EVENT_ACTION_END, this,
-            onPanActionCallBack);
-        gestureApi->addGestureToNode(arkUI_NodeHandle, panGesture, PARALLEL, NORMAL_GESTURE_MASK);
+        } else if (e.action == ArkUI_NodeTouchEventAction::NODE_ACTION_UP) {
+            LOG(INFO) << "[clx] <PullToRefreshNode::onNodeEvent > NODE_ACTION_CANCEL";
+            this->onActionEnd();
+        }
     }
+
 
     void SmartRefreshLayoutComponentInstance::onActionUpdate() {
         if (state == IS_FREE || state == IS_PULL_DOWN_1 || state == IS_PULL_DOWN_2 || state == IS_PULL_UP_1 ||

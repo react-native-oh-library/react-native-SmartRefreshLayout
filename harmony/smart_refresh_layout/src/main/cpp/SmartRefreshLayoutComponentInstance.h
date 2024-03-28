@@ -7,9 +7,10 @@
 #import "RNOH/arkui/NativeNodeApi.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
+#include <dlfcn.h>
 
 namespace rnoh {
-    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate {
+    class SmartRefreshLayoutComponentInstance : public CppComponentInstance, public PullToRefreshNodeDelegate, public TouchEventHandler {
     private:
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
@@ -51,8 +52,7 @@ namespace rnoh {
         PullToRefreshNode &getLocalRootArkUINode() override;
 
         void setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) override;
-
-        void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);
+    
         float getTranslateYOfRefresh(float newTranslateY);
         void onActionUpdate();
         void onActionEnd();
@@ -68,5 +68,6 @@ namespace rnoh {
         void onHeaderReleased() override;
 
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
+        void onTouchEvent(ArkUI_NodeTouchEvent e) override;
     };
 } // namespace rnoh

@@ -4,7 +4,7 @@
   },
   "author": "",
   "name": "rnoh-smartrefreshlayout",
-  "description": "Please describe the basic information.",
+  "description": "c-api-foundation",
   "main": "index.ets",
   "version": "0.6.7-0.2.3",
   "dependencies": {
