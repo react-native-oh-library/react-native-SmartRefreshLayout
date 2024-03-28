@@ -10,14 +10,14 @@ namespace rnoh {
 
     RNCDefaultHeaderComponentInstance::RNCDefaultHeaderComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {}
-    void RNCDefaultHeaderComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
-                                                        std::size_t index)  {
-        CppComponentInstance::onChildInserted(childComponentInstance, index);
+    void RNCDefaultHeaderComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
+                                                        std::size_t index) {
+        CppComponentInstance::insertChild(childComponentInstance, index);
         m_stackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
     }
 
-    void RNCDefaultHeaderComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
-        CppComponentInstance::onChildRemoved(childComponentInstance);
+    void RNCDefaultHeaderComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {
+        CppComponentInstance::removeChild(childComponentInstance);
         m_stackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 

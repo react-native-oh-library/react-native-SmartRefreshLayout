@@ -17,17 +17,19 @@ namespace rnoh {
         m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
         m_pullToRefreshNode.insertChild(m_listStackNode, 1);
         m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
-    
+        m_headerStackNode.setHeight(facebook::react::Size({0, 0}));
+
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
+
         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     }
 
 
-    void SmartRefreshLayoutComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
-                                                              std::size_t index) {
-        CppComponentInstance::onChildInserted(childComponentInstance, index);
+    void SmartRefreshLayoutComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance,
+                                                          std::size_t index) {
+        CppComponentInstance::insertChild(childComponentInstance, index);
         if (!isHeaderInserted) {
             m_headerStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
 
@@ -35,13 +37,10 @@ namespace rnoh {
         } else {
             m_listStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
         }
-        auto nodeValue =
-            NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
-        m_headerStackNode.setSize(facebook::react::Size({nodeValue->value[nodeValue->size - 1].f32, 0}));
     }
 
-    void SmartRefreshLayoutComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
-        CppComponentInstance::onChildRemoved(childComponentInstance);
+    void SmartRefreshLayoutComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {
+        CppComponentInstance::removeChild(childComponentInstance);
         m_headerStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
         m_listStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
@@ -194,7 +193,7 @@ namespace rnoh {
     bool SmartRefreshLayoutComponentInstance::isComponentTop() {
         std::vector<ComponentInstance::Shared> child = getChildren();
         for (ComponentInstance::Shared c : child) {
-            if (c->getComponentName() == "ScrollView") {
+            if (c->getContext().componentName == "ScrollView") {
                 auto scrollView = std::dynamic_pointer_cast<rnoh::ScrollViewComponentInstance>(c);
                 if (scrollView != nullptr) {
                     return scrollView->getScrollViewMetrics().contentOffset.y <= 0;
@@ -203,57 +202,75 @@ namespace rnoh {
         }
         return false;
     };
+
     void SmartRefreshLayoutComponentInstance::setNativeResponderBlocked(bool blocked) {
         std::vector<ComponentInstance::Shared> child = getChildren();
         for (ComponentInstance::Shared c : child) {
-            if (c->getComponentName() == "ScrollView") {
+            if (c->getContext().componentName == "ScrollView") {
                 auto scrollView = std::dynamic_pointer_cast<rnoh::ScrollViewComponentInstance>(c);
                 if (blocked) {
                     scrollView->setNativeResponderBlocked(!blocked);
+                    break;
                 }
             }
         }
     }
-    void SmartRefreshLayoutComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
-        CppComponentInstance::onPropsChanged(props);
-        if (props == nullptr) {
+    void SmartRefreshLayoutComponentInstance::setProps(facebook::react::Props::Shared props) {
+        ComponentInstance::setProps(props);
+        auto refreshProps = std::dynamic_pointer_cast<const facebook::react::SmartRefreshLayoutProps>(props);
+        if (refreshProps == nullptr) {
             return;
         }
-        // TODO: props attributes
-        headerHeight = props->headerHeight;
-        autoRefresh.refresh = props->autoRefresh.refresh;
-        autoRefresh.time = props->autoRefresh.time;
-        dragRate = props->dragRate;
-        maxDragRate = props->maxDragRate;
-        overScrollBounce = props->overScrollBounce;
-        overScrollDrag = props->overScrollDrag;
-        pureScroll = props->pureScroll;
-        facebook::react::SharedColor headerColor = props->primaryColor;
-        m_pullToRefreshNode.setEnableRefresh(props->enableRefresh);
-        m_pullToRefreshNode.setMaxTranslate(props->headerHeight * 2);
+        // TODO: refreshProps attributes
+        headerHeight = refreshProps->headerHeight;
+        autoRefresh.refresh = refreshProps->autoRefresh.refresh;
+        autoRefresh.time = refreshProps->autoRefresh.time;
+        dragRate = refreshProps->dragRate;
+        maxDragRate = refreshProps->maxDragRate;
+        overScrollBounce = refreshProps->overScrollBounce;
+        overScrollDrag = refreshProps->overScrollDrag;
+        pureScroll = refreshProps->pureScroll;
+        facebook::react::SharedColor headerColor = refreshProps->primaryColor;
+        m_pullToRefreshNode.setEnableRefresh(refreshProps->enableRefresh);
+        m_pullToRefreshNode.setMaxTranslate(refreshProps->headerHeight * 2);
         m_pullToRefreshNode.setHeaderBackgroundColor(headerColor);
     }
 
+    void SmartRefreshLayoutComponentInstance::setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) {
+        ComponentInstance::setEventEmitter(eventEmitter);
+        auto smartRefreshLayoutEventEmitter =
+            std::dynamic_pointer_cast<const facebook::react::SmartRefreshLayoutEventEmitter>(eventEmitter);
+        if (smartRefreshLayoutEventEmitter == nullptr) {
+            return;
+        }
+        m_smartRefreshLayoutEventEmitter = smartRefreshLayoutEventEmitter;
+    };
 
-    void SmartRefreshLayoutComponentInstance::onRefresh() { m_eventEmitter->onRefresh({}); };
+    void SmartRefreshLayoutComponentInstance::onRefresh() { m_smartRefreshLayoutEventEmitter->onRefresh({}); };
 
     void SmartRefreshLayoutComponentInstance::onHeaderPulling(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;
-        m_eventEmitter->onHeaderPulling({percent, displayedHeaderHeight, headerHeight});
+        m_smartRefreshLayoutEventEmitter->onHeaderPulling({percent, displayedHeaderHeight, headerHeight});
     };
 
     void SmartRefreshLayoutComponentInstance::onHeaderReleasing(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;
-        m_eventEmitter->onHeaderReleasing({percent, displayedHeaderHeight, headerHeight});
+        m_smartRefreshLayoutEventEmitter->onHeaderReleasing({percent, displayedHeaderHeight, headerHeight});
     };
 
     void SmartRefreshLayoutComponentInstance::onHeaderMoving(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;
-        m_eventEmitter->onHeaderMoving({percent, displayedHeaderHeight, headerHeight});
+        m_smartRefreshLayoutEventEmitter->onHeaderMoving({percent, displayedHeaderHeight, headerHeight});
     };
-    void SmartRefreshLayoutComponentInstance::onPullDownToRefresh() { m_eventEmitter->onPullDownToRefresh({}); };
-    void SmartRefreshLayoutComponentInstance::onReleaseToRefresh() { m_eventEmitter->onReleaseToRefresh({}); };
-    void SmartRefreshLayoutComponentInstance::onHeaderReleased() { m_eventEmitter->onHeaderReleased({}); }
+    void SmartRefreshLayoutComponentInstance::onPullDownToRefresh() {
+        m_smartRefreshLayoutEventEmitter->onPullDownToRefresh({});
+    };
+    void SmartRefreshLayoutComponentInstance::onReleaseToRefresh() {
+        m_smartRefreshLayoutEventEmitter->onReleaseToRefresh({});
+    };
+    void SmartRefreshLayoutComponentInstance::onHeaderReleased() {
+        m_smartRefreshLayoutEventEmitter->onHeaderReleased({});
+    }
     void SmartRefreshLayoutComponentInstance::handleCommand(std::string const &commandName,
                                                             folly::dynamic const &args) {
         if (commandName == "finishRefresh" && args.isArray() && args.size() == 2) {
