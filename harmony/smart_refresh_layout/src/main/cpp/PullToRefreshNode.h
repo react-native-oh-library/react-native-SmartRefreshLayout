@@ -4,15 +4,6 @@
 #include "PullToRefreshConfigurator.h"
 #include "react/renderer/graphics/Color.h"
 
-const int IS_FREE = 0;
-const int IS_PULL_DOWN_1 = 11;
-const int IS_PULL_DOWN_2 = 12;
-const int IS_REFRESHING = 2;
-const int IS_REFRESHED = 3;
-const int IS_PULL_UP_1 = 41;
-const int IS_PULL_UP_2 = 42;
-const int IS_LOADING = 5;
-
 namespace rnoh {
 
     class PullToRefreshNodeDelegate {
@@ -48,7 +39,7 @@ namespace rnoh {
         void setHeaderHeight(float h);
         void setEnableRefresh(bool enable);
         void setMaxTranslate(float maxHeight);
-        void setHeaderBackgroundColor(facebook::react::SharedColor &color);
+        void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
     };
 

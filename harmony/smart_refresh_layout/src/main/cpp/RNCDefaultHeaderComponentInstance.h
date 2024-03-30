@@ -7,6 +7,9 @@
 #pragma once
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
+#include "RNOH/arkui/TextNode.h"
+#include "RNOH/arkui/ImageNode.h"
+#include "RNOH/arkui/LoadingProgressNode.h"
 #include "ShadowNodes.h"
 
 namespace rnoh {
@@ -14,13 +17,21 @@ namespace rnoh {
 
     private:
         StackNode m_stackNode;
+        ImageNode imageNode;
+        TextNode textNode;
+        LoadingProgressNode progressNode;
+        ArkUI_NodeHandle mColumnHandle;
+        std::string primaryColor{""};
 
     public:
         RNCDefaultHeaderComponentInstance(Context context);
-
         void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
+        void onPropsChanged(SharedConcreteProps const &props) override;
 
+        void finalizeUpdates() override;
         StackNode &getLocalRootArkUINode() override;
+        void onRefreshStatusChange(int32_t status);
+        std::string getDefaultHeaderBackGroundColor() { return primaryColor; }
     };
 } // namespace rnoh

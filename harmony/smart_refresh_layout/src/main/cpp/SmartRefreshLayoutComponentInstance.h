@@ -1,13 +1,15 @@
 #pragma once
 #include "Animation.h"
 #include "Props.h"
+#include "RNCDefaultHeaderComponentInstance.h"
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
-#import "RNOH/arkui/ArkUINodeRegistry.h"
-#import "RNOH/arkui/NativeNodeApi.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
 #include "ShadowNodes.h"
+#include "SmartRefreshState.h"
+
+std::string globalHeaderType = "RNCDefaultHeader";
 
 namespace rnoh {
     class SmartRefreshLayoutComponentInstance
@@ -17,7 +19,7 @@ namespace rnoh {
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
         StackNode m_listStackNode;
-
+        std::shared_ptr<rnoh::RNCDefaultHeaderComponentInstance> defaultHeaderInstance;
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
 
         bool overScrollBounce{true};
@@ -37,6 +39,7 @@ namespace rnoh {
         int32_t downY{0};   // first down touch on Y
         int32_t offsetY{0}; // pan offset on Y
         Animation *animation{nullptr};
+        void setDefaultHeaderInstance();
 
     public:
         SmartRefreshLayoutComponentInstance(Context context);
@@ -67,5 +70,9 @@ namespace rnoh {
         void onHeaderReleased() override;
 
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
+
+
+        //  defaultHeader
+        void changeStatus();
     };
 } // namespace rnoh

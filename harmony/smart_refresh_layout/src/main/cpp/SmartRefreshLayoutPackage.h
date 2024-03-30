@@ -28,18 +28,23 @@
 #include "SmartRefreshLayoutEmitRequestHandler.h"
 #include "RNCAnyHeaderComponentInstance.h"
 #include "SmartRefreshLayoutComponentInstance.h"
+#include "RNCDefaultHeaderComponentInstance.h"
 
 namespace rnoh {
 
     class SmartRefreshLayoutPackageComponentInstanceFactoryDelegate : public ComponentInstanceFactoryDelegate {
-      public:
+    public:
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
             if (ctx.componentName == "RNCAnyHeader") {
+                globalHeaderType = "RNCAnyHeader";
                 return std::make_shared<RNCAnyHeaderComponentInstance>(std::move(ctx));
             } else if (ctx.componentName == "SmartRefreshLayout") {
                 return std::make_shared<SmartRefreshLayoutComponentInstance>(std::move(ctx));
+            } else if (ctx.componentName == "RNCDefaultHeader") {
+                globalHeaderType = "RNCDefaultHeader";
+                return std::make_shared<RNCDefaultHeaderComponentInstance>(std::move(ctx));
             }
             return nullptr;
         }

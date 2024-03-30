@@ -47,7 +47,7 @@ namespace rnoh {
 
     void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator.setHasRefresh(enable); }
     void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator.setMaxTranslate(maxHeight); }
-    void PullToRefreshNode::setHeaderBackgroundColor(facebook::react::SharedColor &color) {
+    void PullToRefreshNode::setHeaderBackgroundColor(facebook::react::SharedColor const &color) {
         uint32_t colorValue1 = *color;
         ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};
         ArkUI_AttributeItem colorItem1 = {preparedColorValue1, sizeof(preparedColorValue1) / sizeof(ArkUI_NumberValue)};

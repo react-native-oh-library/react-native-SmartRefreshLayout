@@ -8,6 +8,8 @@
 #include <arkui/native_node.h>
 #include <arkui/native_gesture.h>
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "RNCDefaultHeaderComponentInstance.h"
+#include <react/renderer/graphics/Geometry.h>
 
 namespace rnoh {
 
@@ -17,7 +19,7 @@ namespace rnoh {
         m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
         m_pullToRefreshNode.insertChild(m_listStackNode, 1);
         m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
-    
+
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
@@ -38,6 +40,7 @@ namespace rnoh {
         auto nodeValue =
             NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
         m_headerStackNode.setSize(facebook::react::Size({nodeValue->value[nodeValue->size - 1].f32, 0}));
+        setDefaultHeaderInstance();
     }
 
     void SmartRefreshLayoutComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
@@ -45,6 +48,7 @@ namespace rnoh {
         m_headerStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
         m_listStackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
+
 
     PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() { return m_pullToRefreshNode; }
 
@@ -104,6 +108,7 @@ namespace rnoh {
                     }
                     if (trY > 0) {
                         this->onHeaderPulling(trYTop);
+                        this->changeStatus();
                     }
                 }
             }
@@ -123,6 +128,7 @@ namespace rnoh {
                     trYTop = maxTranslate * 0.5; // 这个位置要设置高度，收回去
                     this->onRefresh();
                     m_pullToRefreshNode.setHeaderHeight(trYTop);
+                    this->changeStatus();
                 }
             }
         }
@@ -189,6 +195,7 @@ namespace rnoh {
     void SmartRefreshLayoutComponentInstance::finishRefresh() {
         state = IS_REFRESHED;
         closeRefresh(trYTop, 0, m_pullToRefreshNode.getPullToRefreshConfigurator().getAnimDuration());
+        changeStatus();
     }
 
     bool SmartRefreshLayoutComponentInstance::isComponentTop() {
@@ -211,6 +218,7 @@ namespace rnoh {
                 if (blocked) {
                     scrollView->setNativeResponderBlocked(!blocked);
                 }
+                break;
             }
         }
     }
@@ -219,7 +227,6 @@ namespace rnoh {
         if (props == nullptr) {
             return;
         }
-        // TODO: props attributes
         headerHeight = props->headerHeight;
         autoRefresh.refresh = props->autoRefresh.refresh;
         autoRefresh.time = props->autoRefresh.time;
@@ -232,6 +239,7 @@ namespace rnoh {
         m_pullToRefreshNode.setEnableRefresh(props->enableRefresh);
         m_pullToRefreshNode.setMaxTranslate(props->headerHeight * 2);
         m_pullToRefreshNode.setHeaderBackgroundColor(headerColor);
+        LOG(INFO) << "[tyBrave] <SmartRefreshLayoutComponentInstance onPropsChanged{}";
     }
 
 
@@ -242,6 +250,61 @@ namespace rnoh {
         m_eventEmitter->onHeaderPulling({percent, displayedHeaderHeight, headerHeight});
     };
 
+    void SmartRefreshLayoutComponentInstance::changeStatus() {
+        if (globalHeaderType != "RNCDefaultHeader") {
+            return;
+        }
+        if (defaultHeaderInstance == nullptr) {
+            setDefaultHeaderInstance();
+        } else {
+            defaultHeaderInstance->onRefreshStatusChange(state);
+        }
+    }
+
+
+    void SmartRefreshLayoutComponentInstance::setDefaultHeaderInstance() {
+        if (globalHeaderType == "RNCDefaultHeader" && defaultHeaderInstance == nullptr) {
+            std::vector<ComponentInstance::Shared> child = getChildren();
+            for (ComponentInstance::Shared c : child) {
+                if (c->getComponentName() == "RNCDefaultHeader") {
+                    defaultHeaderInstance = std::dynamic_pointer_cast<rnoh::RNCDefaultHeaderComponentInstance>(c);
+                    if (defaultHeaderInstance != nullptr &&
+                        !defaultHeaderInstance->getDefaultHeaderBackGroundColor().empty()) {
+                        std::string str = defaultHeaderInstance->getDefaultHeaderBackGroundColor();
+                        if (str.find("#") == 0) {
+                            str.erase(std::remove(str.begin(), str.end(), '#'), str.end());
+                            if (str.length() == 6) {
+                                int red = std::stoi(str.substr(0, 2), nullptr, 16) ;
+                                int green = std::stoi(str.substr(2, 2), nullptr, 16) ;
+                                int blue = std::stoi(str.substr(4, 2), nullptr, 16) ;
+                                int s = red << 24 | green << 16 | blue << 8;
+
+                                std::stringstream ss;
+                                ss << std::hex << (255|red << 24 | green << 16 | blue << 8);
+
+                                LOG(INFO)
+                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}ss:"
+                                    << ss.str();
+
+                                LOG(INFO)
+                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}red:"
+                                    << str.substr(0, 2) << ";green:" << str.substr(2, 2) << ";blue:" << str.substr(4, 2) << ";s:" << s << ";str:" << str;
+                                LOG(INFO)
+                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}red:"<<red<<";green:"<<green<<";blue:"<<blue<<";s:"<<s<<";str:"<<str;
+                                m_pullToRefreshNode.setHeaderBackgroundColor(0xffffff00);
+                            }
+
+                            //                             m_pullToRefreshNode.setHeaderBackgroundColor(std::stoi(str.insert(0,
+                            //                             "0x"), 0, 16));
+                           
+                           
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    };
     void SmartRefreshLayoutComponentInstance::onHeaderReleasing(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;
         m_eventEmitter->onHeaderReleasing({percent, displayedHeaderHeight, headerHeight});
