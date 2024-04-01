@@ -53,3 +53,6 @@ export class StoreHouseHeader extends Component<StoreHouseHeaderProps> {}
 
 interface AnyHeaderProps extends ViewProps {}
 export class AnyHeader extends Component<AnyHeaderProps> {}
+
+interface MeterialProps extends ViewProps{}
+export class MeaterialHeader extends Component<MeterialProps>{}

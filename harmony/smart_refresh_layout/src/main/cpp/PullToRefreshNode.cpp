@@ -12,8 +12,7 @@ namespace rnoh {
         NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_COLUMN_JUSTIFY_CONTENT, &columnFlexItem);
     }
 
-    PullToRefreshNode::~PullToRefreshNode() {
-    }
+    PullToRefreshNode::~PullToRefreshNode() {}
     void PullToRefreshNode::setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate) {
         m_pullToRefreshNodeDelegate = pullToRefreshNodeDelegate;
     }
@@ -24,6 +23,15 @@ namespace rnoh {
             ArkUI_NumberValue alignments[] = {{.u32 = ARKUI_ALIGNMENT_BOTTOM}};
             ArkUI_AttributeItem alignment = {alignments, sizeof(alignments) / sizeof(ArkUI_NumberValue)};
             NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_STACK_ALIGN_CONTENT, &alignment);
+//             NativeNodeApi::getInstance()->registerNodeEvent(m_headerArkUINodeHandle, NODE_EVENT_ON_AREA_CHANGE, 1263);
+//             NativeNodeApi::getInstance()->registerNodeEventReceiver([](ArkUI_NodeEvent *event) {
+//                 LOG(INFO) << "[tyBrave] <registerNodeEventReceiver NODE_EVENT_ON_AREA_CHANGE {}:eventID:"
+//                           << event->eventId;
+//                 if (event->kind == ArkUI_NodeEventType::NODE_EVENT_ON_AREA_CHANGE) {
+//                     LOG(INFO) << "[tyBrave] <registerNodeEventReceiver NODE_EVENT_ON_AREA_CHANGE success"
+//                               << event->eventId;
+//                 }
+//             });
         } else if (index == 1) {
             m_listArkUINodeHandle = child.getArkUINodeHandle();
         }
@@ -38,6 +46,10 @@ namespace rnoh {
             m_listArkUINodeHandle = nullptr;
         }
     }
+
+//     void PullToRefreshNode::onNodeEvent(ArkUI_NodeEvent *event) {
+//         LOG(INFO) << "[tyBrave] <RNCDefaultHeaderComponentInstance NODE_EVENT_ON_AREA_CHANGE {}:eventID:"<<event->eventId;
+//     }
 
     void PullToRefreshNode::setHeaderHeight(float h) {
         ArkUI_NumberValue heightNumberValue[] = {h};

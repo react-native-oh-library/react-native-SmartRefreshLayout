@@ -1,5 +1,5 @@
 //
-// Created on 2024/3/23.
+// Created on 2024/3/30.
 //
 // Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
 // please include "napi/native_api.h".
@@ -10,23 +10,24 @@
 #include "RNOH/arkui/StackNode.h"
 #include "RNOH/arkui/TextNode.h"
 #include "RNOH/arkui/ImageNode.h"
-#include "RNOH/arkui/LoadingProgressNode.h"
 #include "ShadowNodes.h"
 
 namespace rnoh {
-    class RNCDefaultHeaderComponentInstance : public CppComponentInstance<facebook::react::RNCDefaultHeaderShadowNode>,
-                                              public HeaderNodeDelegate {
+    class RNCClassicsHeaderComponentInstance
+        : public CppComponentInstance<facebook::react::RNCClassicsHeaderShadowNode>,
+          public HeaderNodeDelegate {
 
     private:
         StackNode m_stackNode;
         ImageNode imageNode;
+        ImageNode updateImageNode;
         TextNode textNode;
-        LoadingProgressNode progressNode;
+        TextNode timeTextNode;
         ArkUI_NodeHandle mColumnHandle;
         std::string primaryColor{""};
 
     public:
-        RNCDefaultHeaderComponentInstance(Context context);
+        RNCClassicsHeaderComponentInstance(Context context);
         void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
         void onPropsChanged(SharedConcreteProps const &props) override;

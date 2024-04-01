@@ -40,7 +40,7 @@ namespace rnoh {
         auto nodeValue =
             NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
         m_headerStackNode.setSize(facebook::react::Size({nodeValue->value[nodeValue->size - 1].f32, 0}));
-        setDefaultHeaderInstance();
+        setOtherHeaderDelegate();
     }
 
     void SmartRefreshLayoutComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
@@ -101,7 +101,7 @@ namespace rnoh {
                     // 计算当前需要位移的距离
                     trYTop = this->getTranslateYOfRefresh(trY);
                     m_pullToRefreshNode.setHeaderHeight(trYTop);
-                    if (trY < refreshHeight) {
+                    if (trYTop / maxTranslate < 0.5) {
                         state = IS_PULL_DOWN_1;
                     } else {
                         state = IS_PULL_DOWN_2;
@@ -251,55 +251,62 @@ namespace rnoh {
     };
 
     void SmartRefreshLayoutComponentInstance::changeStatus() {
-        if (globalHeaderType != "RNCDefaultHeader") {
+        if (globalHeaderType != "RNCDefaultHeader" && globalHeaderType != "RNCClassicsHeader") {
             return;
         }
-        if (defaultHeaderInstance == nullptr) {
-            setDefaultHeaderInstance();
+        if (delegate == nullptr) {
+            setOtherHeaderDelegate();
         } else {
-            defaultHeaderInstance->onRefreshStatusChange(state);
+            delegate->onRefreshStatusChange(state);
         }
     }
 
 
-    void SmartRefreshLayoutComponentInstance::setDefaultHeaderInstance() {
-        if (globalHeaderType == "RNCDefaultHeader" && defaultHeaderInstance == nullptr) {
+    void SmartRefreshLayoutComponentInstance::setOtherHeaderDelegate() {
+        if (delegate == nullptr) {
             std::vector<ComponentInstance::Shared> child = getChildren();
             for (ComponentInstance::Shared c : child) {
-                if (c->getComponentName() == "RNCDefaultHeader") {
-                    defaultHeaderInstance = std::dynamic_pointer_cast<rnoh::RNCDefaultHeaderComponentInstance>(c);
-                    if (defaultHeaderInstance != nullptr &&
-                        !defaultHeaderInstance->getDefaultHeaderBackGroundColor().empty()) {
-                        std::string str = defaultHeaderInstance->getDefaultHeaderBackGroundColor();
-                        if (str.find("#") == 0) {
-                            str.erase(std::remove(str.begin(), str.end(), '#'), str.end());
-                            if (str.length() == 6) {
-                                int red = std::stoi(str.substr(0, 2), nullptr, 16) ;
-                                int green = std::stoi(str.substr(2, 2), nullptr, 16) ;
-                                int blue = std::stoi(str.substr(4, 2), nullptr, 16) ;
-                                int s = red << 24 | green << 16 | blue << 8;
-
-                                std::stringstream ss;
-                                ss << std::hex << (255|red << 24 | green << 16 | blue << 8);
-
-                                LOG(INFO)
-                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}ss:"
-                                    << ss.str();
-
-                                LOG(INFO)
-                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}red:"
-                                    << str.substr(0, 2) << ";green:" << str.substr(2, 2) << ";blue:" << str.substr(4, 2) << ";s:" << s << ";str:" << str;
-                                LOG(INFO)
-                                    << "[tyBrave] <SmartRefreshLayoutComponentInstance setDefaultHeaderInstance{}red:"<<red<<";green:"<<green<<";blue:"<<blue<<";s:"<<s<<";str:"<<str;
-                                m_pullToRefreshNode.setHeaderBackgroundColor(0xffffff00);
-                            }
-
-                            //                             m_pullToRefreshNode.setHeaderBackgroundColor(std::stoi(str.insert(0,
-                            //                             "0x"), 0, 16));
-                           
-                           
-                        }
-                    }
+                if (c->getComponentName() == "RNCDefaultHeader" || c->getComponentName() == "RNCClassicsHeader") {
+                    delegate = std::dynamic_pointer_cast<rnoh::HeaderNodeDelegate>(c);
+                    //                     if (defaultHeaderInstance != nullptr &&
+                    //                         !defaultHeaderInstance->getDefaultHeaderBackGroundColor().empty()) {
+                    //                         std::string str =
+                    //                         defaultHeaderInstance->getDefaultHeaderBackGroundColor(); if
+                    //                         (str.find("#") == 0) {
+                    //                             str.erase(std::remove(str.begin(), str.end(), '#'), str.end());
+                    //                             if (str.length() == 6) {
+                    //                                 int red = std::stoi(str.substr(0, 2), nullptr, 16);
+                    //                                 int green = std::stoi(str.substr(2, 2), nullptr, 16);
+                    //                                 int blue = std::stoi(str.substr(4, 2), nullptr, 16);
+                    //                                 int s = red << 24 | green << 16 | blue << 8;
+                    //
+                    //                                 std::stringstream ss;
+                    //                                 ss << std::hex << (255 | red << 24 | green << 16 | blue << 8);
+                    //
+                    //                                 LOG(INFO)
+                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
+                    //                                     setDefaultHeaderInstance{}ss:"
+                    //                                     << ss.str();
+                    //
+                    //                                 LOG(INFO)
+                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
+                    //                                     setDefaultHeaderInstance{}red:"
+                    //                                     << str.substr(0, 2) << ";green:" << str.substr(2, 2) <<
+                    //                                     ";blue:" << str.substr(4, 2)
+                    //                                     << ";s:" << s << ";str:" << str;
+                    //                                 LOG(INFO)
+                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
+                    //                                     setDefaultHeaderInstance{}red:"
+                    //                                     << red << ";green:" << green << ";blue:" << blue << ";s:" <<
+                    //                                     s << ";str:" << str;
+                    //                                 m_pullToRefreshNode.setHeaderBackgroundColor(0xffffff00);
+                    //                             }
+                    //
+                    //                             //
+                    //                             m_pullToRefreshNode.setHeaderBackgroundColor(std::stoi(str.insert(0,
+                    //                             //                             "0x"), 0, 16));
+                    //                         }
+                    //                     }
                     break;
                 }
             }

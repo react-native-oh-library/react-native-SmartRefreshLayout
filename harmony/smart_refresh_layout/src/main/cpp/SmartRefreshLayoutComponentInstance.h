@@ -1,7 +1,7 @@
 #pragma once
 #include "Animation.h"
+#include "HeaderNodeDelegate.h"
 #include "Props.h"
-#include "RNCDefaultHeaderComponentInstance.h"
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
 #include "PullToRefreshNode.h"
@@ -19,9 +19,8 @@ namespace rnoh {
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
         StackNode m_listStackNode;
-        std::shared_ptr<rnoh::RNCDefaultHeaderComponentInstance> defaultHeaderInstance;
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
-
+        std::shared_ptr<rnoh::HeaderNodeDelegate> delegate;
         bool overScrollBounce{true};
         bool enableRefresh{true};
         facebook::react::Float headerHeight{0.0};
@@ -39,7 +38,7 @@ namespace rnoh {
         int32_t downY{0};   // first down touch on Y
         int32_t offsetY{0}; // pan offset on Y
         Animation *animation{nullptr};
-        void setDefaultHeaderInstance();
+        void setOtherHeaderDelegate();
 
     public:
         SmartRefreshLayoutComponentInstance(Context context);

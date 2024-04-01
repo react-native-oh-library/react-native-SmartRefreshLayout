@@ -25,22 +25,24 @@ namespace rnoh {
         ArkUI_NodeHandle m_listArkUINodeHandle;
         PullToRefreshNodeDelegate *m_pullToRefreshNodeDelegate;
         PullToRefreshConfigurator refreshConfigurator{PullToRefreshConfigurator()};
-    
+
     public:
         PullToRefreshNode();
         ~PullToRefreshNode() override;
-    
+
         void insertChild(ArkUINode &child, std::size_t index);
 
         void removeChild(ArkUINode &child);
-    
+
         void setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate);
-        
+
         void setHeaderHeight(float h);
         void setEnableRefresh(bool enable);
         void setMaxTranslate(float maxHeight);
         void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
+
+//         void onNodeEvent(ArkUI_NodeEvent *event) override;
     };
 
 } // namespace rnoh

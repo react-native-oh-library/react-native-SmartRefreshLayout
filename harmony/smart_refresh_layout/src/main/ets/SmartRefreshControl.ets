@@ -102,7 +102,7 @@ export struct SmartRefreshControl {
                 this.init()
             }
         )
-        this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
+        this.cleanupCommandCallback = this.ctx.componentCommandReceiver.registerCommandCallback(
             this.tag,
             (command, args:ESObject[]) => {
                 if (command === 'finishRefresh') {

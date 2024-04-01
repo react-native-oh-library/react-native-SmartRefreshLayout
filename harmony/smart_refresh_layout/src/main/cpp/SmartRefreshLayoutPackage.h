@@ -17,6 +17,10 @@
 #ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
 #define SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
 
+#include "RNCClassicsHeaderJSIBinder.h"
+#include "RNCClassicsHeaderNapiBinder.h"
+#include "RNCMaterialHeaderJSIBinder.h"
+#include "RNCMaterialHeaderNapiBinder.h"
 #include "RNOH/Package.h"
 #include "ComponentDescriptors.h"
 #include "SmartRefreshLayoutJSIBinder.h"
@@ -29,6 +33,8 @@
 #include "RNCAnyHeaderComponentInstance.h"
 #include "SmartRefreshLayoutComponentInstance.h"
 #include "RNCDefaultHeaderComponentInstance.h"
+#include "RNCClassicsHeaderComponentInstance.h"
+#include "RNCMaterialHeaderComponentInstance.h"
 
 namespace rnoh {
 
@@ -37,6 +43,8 @@ namespace rnoh {
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
+            LOG(INFO) << "[tyBrave] <SmartRefreshLayoutPackageComponentInstanceFactoryDelegate s------:"
+                      << ctx.componentName;
             if (ctx.componentName == "RNCAnyHeader") {
                 globalHeaderType = "RNCAnyHeader";
                 return std::make_shared<RNCAnyHeaderComponentInstance>(std::move(ctx));
@@ -45,6 +53,12 @@ namespace rnoh {
             } else if (ctx.componentName == "RNCDefaultHeader") {
                 globalHeaderType = "RNCDefaultHeader";
                 return std::make_shared<RNCDefaultHeaderComponentInstance>(std::move(ctx));
+            } else if (ctx.componentName == "RNCClassicsHeader") {
+                globalHeaderType = "RNCClassicsHeader";
+                return std::make_shared<RNCClassicsHeaderComponentInstance>(std::move(ctx));
+            } else if (ctx.componentName == "RNCMaterialHeader") {
+                globalHeaderType = "RNCMaterialHeader";
+                return std::make_shared<RNCMaterialHeaderComponentInstance>(std::move(ctx));
             }
             return nullptr;
         }
@@ -66,12 +80,12 @@ namespace rnoh {
                     facebook::react::RNCAnyHeaderComponentDescriptor>(),
                 facebook::react::concreteComponentDescriptorProvider<
                     facebook::react::RNCDefaultHeaderComponentDescriptor>(),
-                //              facebook::react::concreteComponentDescriptorProvider<
-                //                  facebook::react::RNCMaterialHeaderComponentDescriptor>(),
+                facebook::react::concreteComponentDescriptorProvider<
+                    facebook::react::RNCMaterialHeaderComponentDescriptor>(),
                 //              facebook::react::concreteComponentDescriptorProvider<
                 //                  facebook::react::RNCStoreHouseHeaderComponentDescriptor>(),
-                //              facebook::react::concreteComponentDescriptorProvider<
-                //                  facebook::react::RNCClassicsHeaderComponentDescriptor>(),
+                facebook::react::concreteComponentDescriptorProvider<
+                    facebook::react::RNCClassicsHeaderComponentDescriptor>(),
             };
         }
 
@@ -80,6 +94,8 @@ namespace rnoh {
                 {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutJSIBinder>()},
                 {"RNCAnyHeader", std::make_shared<RNCAnyHeaderJSIBinder>()},
                 {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderJSIBinder>()},
+                {"RNCClassicsHeader", std::make_shared<RNCClassicsHeaderJSIBinder>()},
+                {"RNCMaterialHeader", std::make_shared<RNCMaterialHeaderJSIBinder>()},
             };
         }
 
@@ -88,6 +104,8 @@ namespace rnoh {
                 {"SmartRefreshLayout", std::make_shared<SmartRefreshLayoutNapiBinder>()},
                 {"RNCAnyHeader", std::make_shared<RNCAnyHeaderNapiBinder>()},
                 {"RNCDefaultHeader", std::make_shared<RNCDefaultHeaderNapiBinder>()},
+                {"RNCClassicsHeader", std::make_shared<RNCClassicsHeaderNapiBinder>()},
+                {"RNCMaterialHeader", std::make_shared<RNCMaterialHeaderNapiBinder>()},
             };
         }
 
