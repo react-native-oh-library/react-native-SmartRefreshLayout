@@ -59,7 +59,8 @@ namespace rnoh {
         void onActionEnd();
         void closeRefresh(float start, float target, int32_t duration);
         void finishRefresh();
-
+        void setPullHeaderHeight(float h);    
+    
         void onRefresh() override;
         void onHeaderPulling(const float &displayedHeaderHeight) override;
         void onHeaderReleasing(const float &displayedHeaderHeight) override;

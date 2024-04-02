@@ -6,3 +6,4 @@
 
 #include <string>
 enum { IS_FREE, IS_PULL_DOWN_1, IS_PULL_DOWN_2, IS_REFRESHING, IS_REFRESHED, IS_PULL_UP_1, IS_PULL_UP_2, IS_LOADING };
+const std::string MOMENTS[]={"中午", "凌晨", "早上", "下午", "晚上"};

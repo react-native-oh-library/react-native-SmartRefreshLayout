@@ -3,6 +3,7 @@
 #include "RNOH/arkui/ArkUINode.h"
 #include "RNOH/arkui/ScrollNode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
+#include "react/renderer/components/scrollview/ScrollViewProps.h"
 #include "react/renderer/graphics/Color.h"
 #include <arkui/native_interface.h>
 #include <arkui/native_node.h>
@@ -18,6 +19,7 @@ namespace rnoh {
 
         m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
         m_pullToRefreshNode.insertChild(m_listStackNode, 1);
+
         m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
 
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
@@ -75,6 +77,7 @@ namespace rnoh {
                 }
             } else if (actionType == GESTURE_EVENT_ACTION_END) {
                 instance->onActionEnd();
+                instance->onHeaderReleased();
             }
         };
         gestureApi->setGestureEventTarget(
@@ -100,11 +103,13 @@ namespace rnoh {
                     float trY = touchYNew - touchYOld;
                     // 计算当前需要位移的距离
                     trYTop = this->getTranslateYOfRefresh(trY);
-                    m_pullToRefreshNode.setHeaderHeight(trYTop);
+                    setPullHeaderHeight(trYTop);
                     if (trYTop / maxTranslate < 0.5) {
                         state = IS_PULL_DOWN_1;
                     } else {
                         state = IS_PULL_DOWN_2;
+                        // 可释放刷新时触发
+                        this->onReleaseToRefresh();
                     }
                     if (trY > 0) {
                         this->onHeaderPulling(trYTop);
@@ -127,7 +132,7 @@ namespace rnoh {
                     state = IS_REFRESHING;
                     trYTop = maxTranslate * 0.5; // 这个位置要设置高度，收回去
                     this->onRefresh();
-                    m_pullToRefreshNode.setHeaderHeight(trYTop);
+                    setPullHeaderHeight(trYTop);
                     this->changeStatus();
                 }
             }
@@ -181,11 +186,12 @@ namespace rnoh {
         animation->SetAnimationParams(static_cast<std::chrono::milliseconds>(duration), start, target,
                                       [this, &target](double value) {
                                           trYTop = value < 0 ? 0 : value;
-                                          m_pullToRefreshNode.setHeaderHeight(trYTop);
+                                          setPullHeaderHeight(trYTop);
                                           if (trYTop == 0) {
                                               state = IS_FREE;
                                               m_pullToRefreshNode.markDirty();
                                           }
+                                          onHeaderReleasing(trYTop);
                                       });
         if (animation->GetAnimationStatus() == ANIMATION_FREE || animation->GetAnimationStatus() == ANIMATION_FINISH) {
             animation->Start();
@@ -244,6 +250,11 @@ namespace rnoh {
 
 
     void SmartRefreshLayoutComponentInstance::onRefresh() { m_eventEmitter->onRefresh({}); };
+
+    void SmartRefreshLayoutComponentInstance::setPullHeaderHeight(float h) {
+        m_pullToRefreshNode.setHeaderHeight(h);
+        onHeaderMoving(h);
+    }
 
     void SmartRefreshLayoutComponentInstance::onHeaderPulling(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;

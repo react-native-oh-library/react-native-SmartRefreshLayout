@@ -14,7 +14,7 @@ namespace rnoh {
     RNCMaterialHeaderComponentInstance::RNCMaterialHeaderComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {
         LOG(INFO) << "[tyBrave] <RNCMaterialHeaderComponentInstance {}";
-    
+
         facebook::react::ImageSources imageSources;
         imageSources.push_back({.uri = "resource://BASE/media/icon_up.png"});
         imageNode.setSources(imageSources);
@@ -39,10 +39,11 @@ namespace rnoh {
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_BORDER_WIDTH, borderStyValue);
 
         ArkUI_NumberValue radiusArray[] = {{.f32 = 45}};
-        ArkUI_AttributeItem radiusValue[] = {radiusArray,1};
+        ArkUI_AttributeItem radiusValue[] = {radiusArray, 1};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_BORDER_RADIUS, radiusValue);
 
-        ArkUI_NumberValue borderColorArray[] = {{.u32=0xFFaaaaaa},{.u32=0xFFaaaaaa},{.u32=0xFFaaaaaa},{.u32=0xFFaaaaaa},{.u32=0xFFaaaaaa}};
+        ArkUI_NumberValue borderColorArray[] = {
+            {.u32 = 0xFFaaaaaa}, {.u32 = 0xFFaaaaaa}, {.u32 = 0xFFaaaaaa}, {.u32 = 0xFFaaaaaa}, {.u32 = 0xFFaaaaaa}};
         ArkUI_AttributeItem borderColorValue[] = {borderColorArray, 4};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_BORDER_COLOR, borderColorValue);
 
@@ -67,13 +68,13 @@ namespace rnoh {
         ArkUI_AttributeItem positionValue[] = {positionArray, 2};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_POSITION, positionValue);
 
-        NativeNodeApi::getInstance()->insertChildAt(m_stackNode.getArkUINodeHandle(), imageStack,
-                                                    0);
+        NativeNodeApi::getInstance()->insertChildAt(m_stackNode.getArkUINodeHandle(), imageStack, 0);
     }
     void RNCMaterialHeaderComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                              std::size_t index) {
         CppComponentInstance::onChildInserted(childComponentInstance, index);
         m_stackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
+        getParent().lock()->getComponentName();
     }
 
     void RNCMaterialHeaderComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
@@ -86,6 +87,11 @@ namespace rnoh {
     void RNCMaterialHeaderComponentInstance::finalizeUpdates() {
         m_stackNode.setAlignment(ARKUI_ALIGNMENT_CENTER);
         m_stackNode.setBackgroundColor(0XFFFFFF00);
+        if (getParent().lock()) {
+            LOG(INFO) << "[tyBrave] <RNCMaterialHeaderComponentInstance finalizeUpdates  "
+                      << getParent().lock()->getComponentName();
+        }
+    
     }
 
     void RNCMaterialHeaderComponentInstance::setImageRotate(float angle) {

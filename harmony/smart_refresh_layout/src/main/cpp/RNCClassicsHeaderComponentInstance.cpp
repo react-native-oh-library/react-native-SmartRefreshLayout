@@ -40,7 +40,7 @@ namespace rnoh {
         textNode.setFontSize(15);
         textNode.setFontColor(0xff666666);
 
-        timeTextNode.setTextContent("更新于 早上10:10");
+
         timeTextNode.setFontSize(12);
         timeTextNode.setFontColor(0xff7c7c7c);
 
@@ -51,11 +51,11 @@ namespace rnoh {
         std::time_t now_seconds = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         std::tm *now_tm = std::localtime(&now_seconds);
 
-        LOG(INFO) << "[tyBrave] <RNCClassicsHeaderComponentInstance {}"
-                  << "当前时间: " << (now_tm->tm_year + 1900) << '-' << (now_tm->tm_mon + 1) << '-' << now_tm->tm_mday
-                  << ' ' << now_tm->tm_hour << ':' << now_tm->tm_min << ':' << now_tm->tm_sec;
-
-
+        std::string textMoment = now_tm->tm_hour == 12 ? MOMENTS[0] : MOMENTS[now_tm->tm_hour / 6 + 1];
+        timeTextNode.setTextContent(
+            "更新于 " + textMoment + " " + std::to_string(now_tm->tm_hour) + ":" +
+            (now_tm->tm_min > 9 ? std::to_string(now_tm->tm_min) : '0' + std::to_string(now_tm->tm_min)));
+    
         mColumnHandle = NativeNodeApi::getInstance()->createNode(ARKUI_NODE_ROW);
 
         ArkUI_NumberValue heightNumberValue[] = {50};
@@ -66,11 +66,6 @@ namespace rnoh {
         NativeNodeApi::getInstance()->insertChildAt(mColumnHandle, updateImageNode.getArkUINodeHandle(), 1);
         NativeNodeApi::getInstance()->insertChildAt(mColumnHandle, textColumn, 2);
         NativeNodeApi::getInstance()->insertChildAt(m_stackNode.getArkUINodeHandle(), mColumnHandle, 0);
-
-        //         ArkUI_NumberValue positionArray[] = {{.f32 = -50}, {.f32 = 20}};
-        //         ArkUI_AttributeItem positionValue[] = {positionArray, 2};
-        //         NativeNodeApi::getInstance()->setAttribute(timeTextNode.getArkUINodeHandle(), NODE_POSITION,
-        //         positionValue);
     }
     void RNCClassicsHeaderComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                              std::size_t index) {
@@ -110,7 +105,22 @@ namespace rnoh {
         ArkUI_AttributeItem opacityItem = {opacityValue, sizeof(opacityValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(imageNode.getArkUINodeHandle(), NODE_ROTATE, &opacityItem);
     }
-
+    void RNCClassicsHeaderComponentInstance::setRotateAnimate(float angle, int32_t dur, int32_t count) {
+        ArkUI_NumberValue roateArray[] = {{.f32 = 0},
+                                          {.f32 = 0},
+                                          {.f32 = 1},
+                                          {.f32 = angle},
+                                          {.f32 = 0},
+                                          {.i32 = dur},
+                                          {.i32 = ARKUI_CURVE_LINEAR},
+                                          {.i32 = 0},
+                                          {.i32 = count},
+                                          {.i32 = ARKUI_ANIMATION_PLAY_MODE_NORMAL},
+                                          {.f32 = 1}};
+        ArkUI_AttributeItem roateValue[] = {roateArray, 11};
+        NativeNodeApi::getInstance()->setAttribute(updateImageNode.getArkUINodeHandle(), NODE_ROTATE_TRANSITION,
+                                                   roateValue);
+    }
     void RNCClassicsHeaderComponentInstance::onRefreshStatusChange(int32_t status) {
 
         ArkUI_NumberValue imageNodeVisiblyAbleValue[] = {{.u32 = ARKUI_VISIBILITY_VISIBLE}};
@@ -128,6 +138,7 @@ namespace rnoh {
                                                        &visiblyAbleItem);
         } break;
         case IS_REFRESHING: {
+            setRotateAnimate(360, 1000, -1);
             textNode.setTextContent("正在更新");
             ArkUI_NumberValue imageNodeVisiblyAbleValue[] = {{.u32 = ARKUI_VISIBILITY_NONE}};
             ArkUI_AttributeItem imageNodeVisiblyAbleItem = {imageNodeVisiblyAbleValue, 1};
@@ -155,6 +166,13 @@ namespace rnoh {
             ArkUI_AttributeItem visiblyAbleItem = {visiblyAbleValue, 1};
             NativeNodeApi::getInstance()->setAttribute(updateImageNode.getArkUINodeHandle(), NODE_VISIBILITY,
                                                        &visiblyAbleItem);
+            std::time_t now_seconds = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            std::tm *now_tm = std::localtime(&now_seconds);
+
+            std::string textMoment = now_tm->tm_hour == 12 ? MOMENTS[0] : MOMENTS[now_tm->tm_hour / 6 + 1];
+            timeTextNode.setTextContent(
+                "更新于 " + textMoment + " " + std::to_string(now_tm->tm_hour) + ":" +
+                (now_tm->tm_min > 9 ? std::to_string(now_tm->tm_min) : '0' + std::to_string(now_tm->tm_min)));
         } break;
         }
     }
