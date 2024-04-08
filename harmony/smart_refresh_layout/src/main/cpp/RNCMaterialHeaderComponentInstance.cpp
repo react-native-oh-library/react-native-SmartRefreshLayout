@@ -6,22 +6,23 @@
 
 #include "RNCMaterialHeaderComponentInstance.h"
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "TaskCommonThread.h"
 #include "react/renderer/imagemanager/primitives.h"
 #include "SmartRefreshState.h"
+#include <bits/alltypes.h>
 
 namespace rnoh {
 
     RNCMaterialHeaderComponentInstance::RNCMaterialHeaderComponentInstance(Context context)
-        : CppComponentInstance(std::move(context)) {
-        LOG(INFO) << "[tyBrave] <RNCMaterialHeaderComponentInstance {}";
+        : CppComponentInstance(std::move(context)) {}
 
-        facebook::react::ImageSources imageSources;
-        imageSources.push_back({.uri = "resource://BASE/media/icon_up.png"});
-        imageNode.setSources(imageSources);
-        imageNode.setSize({30, 20});
-        imageNode.setResizeMode(facebook::react::ImageResizeMode::Contain);
+    void RNCMaterialHeaderComponentInstance::addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node) {
+        mWindowWidth = screenWidth;
+        progressNode.setLoadingProgressNodeColor(0x53658461);
+        progressNode.setLoadingProgressNodeAnimating(true);
+        progressNode.setSize({45, 45});
 
-        auto imageStack = NativeNodeApi::getInstance()->createNode(ARKUI_NODE_STACK);
+        imageStack = NativeNodeApi::getInstance()->createNode(ARKUI_NODE_STACK);
 
         ArkUI_NumberValue heightArray[] = {{.f32 = 45}};
         ArkUI_AttributeItem heightValue[] = {heightArray, 1};
@@ -51,24 +52,36 @@ namespace rnoh {
         ArkUI_AttributeItem z_indexValue[] = {z_indexArray, 1};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_Z_INDEX, z_indexValue);
 
-        //         ArkUI_NumberValue borderStyArray[] = {ArkUI_BorderStyle::ARKUI_BORDER_STYLE_SOLID};
-        //         ArkUI_AttributeItem borderStyValue[] = {borderStyArray, 1};
-        //         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_BORDER_STYLE, borderStyValue);
-
-        //         uint32_t colorValue =0xFFFFFF00; // facebook::react::isColorMeaningful(color) ? *color :
-        //         *facebook::react::clearColor(); ArkUI_NumberValue preparedColorValue[] = {{.u32 = colorValue}};
-        //         ArkUI_AttributeItem colorItem = {preparedColorValue, sizeof(preparedColorValue) /
-        //         sizeof(ArkUI_NumberValue)}; NativeNodeApi::getInstance()->setAttribute(imageStack,
-        //         NODE_BACKGROUND_COLOR, &colorItem);
-
-
-        NativeNodeApi::getInstance()->insertChildAt(imageStack, imageNode.getArkUINodeHandle(), 0);
-
-        ArkUI_NumberValue positionArray[] = {{.f32 = 80}, {.f32 = 90}};
+        NativeNodeApi::getInstance()->insertChildAt(imageStack, progressNode.getArkUINodeHandle(), 0);
+        NativeNodeApi::getInstance()->insertChildAt(arkUI_Node->getArkUINodeHandle(), imageStack, index);
+        ArkUI_NumberValue positionArray[] = {{.f32 = static_cast<float>((screenWidth - 45) / 2.0)}, {.f32 = -45}};
         ArkUI_AttributeItem positionValue[] = {positionArray, 2};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_POSITION, positionValue);
+    }
 
-        NativeNodeApi::getInstance()->insertChildAt(m_stackNode.getArkUINodeHandle(), imageStack, 0);
+    void RNCMaterialHeaderComponentInstance::onHeaderMove(float dur) {
+        if (isRefreshed) {
+            return;
+        }
+        ArkUI_NumberValue positionArray[] = {{.f32 = static_cast<float>((mWindowWidth - 45) / 2.0)}, {.f32 = dur - 45}};
+        ArkUI_AttributeItem positionValue[] = {positionArray, 2};
+        NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_POSITION, positionValue);
+    }
+    void RNCMaterialHeaderComponentInstance::setScaleAnimate(int32_t dur) {
+
+        TaskCommonThread *task = new TaskCommonThread();
+        task->setTaskParams(static_cast<std::chrono::milliseconds>(dur), [this](double v) {
+            float value = 1.0 - static_cast<float>(v);
+            ArkUI_NumberValue scaleArray[] = {{.f32 = value}, {.f32 = value}};
+            ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
+            NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_SCALE, scaleValue);
+            if (std::abs(value - 0.01) < 1e-6) {
+                ArkUI_NumberValue scaleArray[] = {{.f32 = 1.0}, {.f32 = 1.0}};
+                ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
+                NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_SCALE, scaleValue);
+            }
+        });
+        task->execute();
     }
     void RNCMaterialHeaderComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                              std::size_t index) {
@@ -84,36 +97,31 @@ namespace rnoh {
 
     StackNode &RNCMaterialHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
-    void RNCMaterialHeaderComponentInstance::finalizeUpdates() {
-        m_stackNode.setAlignment(ARKUI_ALIGNMENT_CENTER);
-        m_stackNode.setBackgroundColor(0XFFFFFF00);
-        if (getParent().lock()) {
-            LOG(INFO) << "[tyBrave] <RNCMaterialHeaderComponentInstance finalizeUpdates  "
-                      << getParent().lock()->getComponentName();
-        }
-    
-    }
-
-    void RNCMaterialHeaderComponentInstance::setImageRotate(float angle) {
-        ArkUI_NumberValue opacityValue[] = {{.f32 = 0}, {.f32 = 0}, {.f32 = 1}, {.f32 = angle}, {.f32 = 0}};
-        ArkUI_AttributeItem opacityItem = {opacityValue, sizeof(opacityValue) / sizeof(ArkUI_NumberValue)};
-        NativeNodeApi::getInstance()->setAttribute(imageNode.getArkUINodeHandle(), NODE_ROTATE, &opacityItem);
-    }
 
     void RNCMaterialHeaderComponentInstance::onRefreshStatusChange(int32_t status) {
         switch (status) {
         case IS_FREE:
-        case IS_PULL_DOWN_1: {
-
+        {
+            float x = static_cast<float>((mWindowWidth - 45) / 2.0);
+            float y = -45.0;
+            ArkUI_NumberValue positionArray[] = {{.f32 = x}, {.f32 = y}};
+            ArkUI_AttributeItem positionValue[] = {positionArray, 2};
+            NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_POSITION, positionValue);
+        }
+        case IS_PULL_DOWN_1:
+        case IS_PULL_DOWN_2: {
+            isRefreshed = false;
+            progressNode.setLoadingProgressNodeColor(0xff0099cc);
         } break;
         case IS_REFRESHING: {
+            progressNode.setLoadingProgressNodeColor(0xffff4444);
         }
 
         break;
-        case IS_PULL_DOWN_2: {
-        } break;
         case IS_REFRESHED: {
-
+            isRefreshed = true;
+            progressNode.setLoadingProgressNodeColor(0xffaa66cc);
+            setScaleAnimate(1000);
         } break;
         }
     }

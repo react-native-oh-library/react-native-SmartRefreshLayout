@@ -32,6 +32,7 @@ namespace rnoh {
         facebook::react::SmartRefreshLayoutAutoRefreshStruct autoRefresh{};
         bool isHeaderInserted{false}; // whether list child component inserted
         float trYTop{0.0};
+        float mWidth{0.0};
         int32_t state{IS_FREE};
         int32_t touchYOld{0};
         int32_t touchYNew{0};
@@ -52,7 +53,7 @@ namespace rnoh {
         bool isComponentTop() override;
 
         PullToRefreshNode &getLocalRootArkUINode() override;
-        void setNativeResponderBlocked(bool blocked) override;
+        void onNativeResponderBlockChange(bool isBlocked)override;
         void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);
         float getTranslateYOfRefresh(float newTranslateY);
         void onActionUpdate();

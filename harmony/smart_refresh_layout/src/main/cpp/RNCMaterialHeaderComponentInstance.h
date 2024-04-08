@@ -9,7 +9,7 @@
 #include "RNOH/CppComponentInstance.h"
 #include "RNOH/arkui/StackNode.h"
 #include "RNOH/arkui/TextNode.h"
-#include "RNOH/arkui/ImageNode.h"
+#include "RNOH/arkui/LoadingProgressNode.h"
 #include "ShadowNodes.h"
 
 namespace rnoh {
@@ -19,16 +19,20 @@ namespace rnoh {
 
     private:
         StackNode m_stackNode;
-        ImageNode imageNode;
-    
+        ArkUI_NodeHandle imageStack;
+        LoadingProgressNode progressNode;
+        float mWindowWidth{0.0};
+        bool isRefreshed{false};
+
     public:
         RNCMaterialHeaderComponentInstance(Context context);
         void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
-
-        void finalizeUpdates() override;
+    
         StackNode &getLocalRootArkUINode() override;
         void onRefreshStatusChange(int32_t status) override;
-        void setImageRotate(float angle);
+        void addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node) override;
+        void onHeaderMove(float dur) override;
+        void setScaleAnimate(int32_t dur);
     };
 } // namespace rnoh

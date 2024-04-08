@@ -3,7 +3,6 @@
 #include "RNOH/arkui/ArkUINode.h"
 #include "RNOH/arkui/ScrollNode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
-#include "react/renderer/components/scrollview/ScrollViewProps.h"
 #include "react/renderer/graphics/Color.h"
 #include <arkui/native_interface.h>
 #include <arkui/native_node.h>
@@ -41,7 +40,8 @@ namespace rnoh {
         }
         auto nodeValue =
             NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
-        m_headerStackNode.setSize(facebook::react::Size({nodeValue->value[nodeValue->size - 1].f32, 0}));
+        mWidth = nodeValue->value[nodeValue->size - 1].f32;
+        m_headerStackNode.setSize(facebook::react::Size({mWidth, 0}));
         setOtherHeaderDelegate();
     }
 
@@ -190,6 +190,7 @@ namespace rnoh {
                                           if (trYTop == 0) {
                                               state = IS_FREE;
                                               m_pullToRefreshNode.markDirty();
+                                              this->changeStatus();
                                           }
                                           onHeaderReleasing(trYTop);
                                       });
@@ -200,8 +201,8 @@ namespace rnoh {
 
     void SmartRefreshLayoutComponentInstance::finishRefresh() {
         state = IS_REFRESHED;
-        closeRefresh(trYTop, 0, m_pullToRefreshNode.getPullToRefreshConfigurator().getAnimDuration());
         changeStatus();
+        closeRefresh(trYTop, 0, m_pullToRefreshNode.getPullToRefreshConfigurator().getAnimDuration());
     }
 
     bool SmartRefreshLayoutComponentInstance::isComponentTop() {
@@ -216,13 +217,13 @@ namespace rnoh {
         }
         return false;
     };
-    void SmartRefreshLayoutComponentInstance::setNativeResponderBlocked(bool blocked) {
+    void SmartRefreshLayoutComponentInstance::onNativeResponderBlockChange(bool blocked) {
         std::vector<ComponentInstance::Shared> child = getChildren();
         for (ComponentInstance::Shared c : child) {
             if (c->getComponentName() == "ScrollView") {
                 auto scrollView = std::dynamic_pointer_cast<rnoh::ScrollViewComponentInstance>(c);
                 if (blocked) {
-                    scrollView->setNativeResponderBlocked(!blocked);
+                    scrollView->onNativeResponderBlockChange(!blocked);
                 }
                 break;
             }
@@ -252,7 +253,12 @@ namespace rnoh {
     void SmartRefreshLayoutComponentInstance::onRefresh() { m_eventEmitter->onRefresh({}); };
 
     void SmartRefreshLayoutComponentInstance::setPullHeaderHeight(float h) {
-        m_pullToRefreshNode.setHeaderHeight(h);
+
+        if (globalHeaderType == "RNCMaterialHeader" &&delegate) {
+            delegate->onHeaderMove(h);
+        } else {
+            m_pullToRefreshNode.setHeaderHeight(h);
+        }
         onHeaderMoving(h);
     }
 
@@ -262,7 +268,8 @@ namespace rnoh {
     };
 
     void SmartRefreshLayoutComponentInstance::changeStatus() {
-        if (globalHeaderType != "RNCDefaultHeader" && globalHeaderType != "RNCClassicsHeader") {
+        if (globalHeaderType != "RNCDefaultHeader" && globalHeaderType != "RNCClassicsHeader" &&
+            globalHeaderType != "RNCMaterialHeader") {
             return;
         }
         if (delegate == nullptr) {
@@ -277,8 +284,15 @@ namespace rnoh {
         if (delegate == nullptr) {
             std::vector<ComponentInstance::Shared> child = getChildren();
             for (ComponentInstance::Shared c : child) {
-                if (c->getComponentName() == "RNCDefaultHeader" || c->getComponentName() == "RNCClassicsHeader") {
+                if (c->getComponentName() == "RNCDefaultHeader" || c->getComponentName() == "RNCClassicsHeader" ||
+                    c->getComponentName() == "RNCMaterialHeader") {
                     delegate = std::dynamic_pointer_cast<rnoh::HeaderNodeDelegate>(c);
+                    if (delegate != nullptr && c->getComponentName() == "RNCMaterialHeader") {
+                        ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
+                        ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
+                        NativeNodeApi::getInstance()->setAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
+                        delegate->addHeader(mWidth, 3, &m_pullToRefreshNode);
+                    }
                     //                     if (defaultHeaderInstance != nullptr &&
                     //                         !defaultHeaderInstance->getDefaultHeaderBackGroundColor().empty()) {
                     //                         std::string str =
