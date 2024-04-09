@@ -223,7 +223,7 @@ namespace rnoh {
             if (c->getComponentName() == "ScrollView") {
                 auto scrollView = std::dynamic_pointer_cast<rnoh::ScrollViewComponentInstance>(c);
                 if (blocked) {
-                    scrollView->onNativeResponderBlockChange(!blocked);
+                    scrollView->setNativeResponderBlocked(!blocked,"REACT_NATIVE");
                 }
                 break;
             }
