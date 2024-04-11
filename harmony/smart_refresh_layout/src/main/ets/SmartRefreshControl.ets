@@ -23,7 +23,7 @@ import {
     ColorSegments,
     convertColorSegmentsToString,
     RNScrollViewManager,
-} from 'rnoh'
+} from '@rnoh/react-native-openharmony'
 import { PullToRefresh } from './PullToRefresh'
 import { PullToRefreshConfigurator } from './PullToRefreshConfigurator'
 import Logger from './Logger'

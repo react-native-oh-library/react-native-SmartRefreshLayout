@@ -20,7 +20,7 @@ import {
     RNViewBase,
     ViewBaseProps,
     Tag
-} from 'rnoh'
+} from '@rnoh/react-native-openharmony'
 import Logger from './Logger'
 
 const TAG: string = "[RNOH] RNCDefaultHeader"
