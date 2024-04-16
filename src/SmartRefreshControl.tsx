@@ -68,7 +68,7 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
   findNode = () => {
     return findNodeHandle(this.smartRefreshLayout);
   };
-  componentWillMount() {
+  componentDidMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
         if (this.shiftPercent >= 0.039 || this.footerShiftPercent >= 0.068) {
@@ -160,10 +160,10 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
     }
 
     // @ts-ignore
-    if (typeof this.props.children?.props === "object" && Platform.OS === 'harmony') {
-      // @ts-ignore
-      this.props.children.props.bounces = false;
-    }
+ //   if (typeof this.props.children?.props === "object" && Platform.OS === 'harmony') {
+ //     // @ts-ignore
+ //     this.props.children.props.bounces = false;
+ //   }
     return (
       <RNCSmartRefreshLayout
         ref={(ref) => {
@@ -172,8 +172,8 @@ export class SmartRefreshControl extends React.Component<SmartRefreshControlProp
         {...nativeProps}
         {...this._panResponder?.panHandlers}
       >
-        {this.props.children}
         {this.renderHeader()}
+        {this.props.children}
       </RNCSmartRefreshLayout>
     );
   }

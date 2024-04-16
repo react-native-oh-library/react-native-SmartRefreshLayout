@@ -23,7 +23,7 @@ import {
     ColorSegments,
     convertColorSegmentsToString,
     RNScrollViewManager,
-} from 'rnoh'
+} from '@rnoh/react-native-openharmony'
 import { PullToRefresh } from './PullToRefresh'
 import { PullToRefreshConfigurator } from './PullToRefreshConfigurator'
 import Logger from './Logger'
@@ -64,8 +64,6 @@ export struct SmartRefreshControl {
     private finishRefresh:(value: string | PromiseLike<string>) => void = ()=>{}
     private displayedHeaderHeight:number = 0;
     private scrollViewTag:number = -1;
-    private isRelease:boolean = false;
-
     @State data: Tag[] = this.descriptor.childrenTags
     @Builder
     private getCustomList() {
@@ -104,7 +102,7 @@ export struct SmartRefreshControl {
                 this.init()
             }
         )
-        this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
+        this.cleanupCommandCallback = this.ctx.componentCommandReceiver.registerCommandCallback(
             this.tag,
             (command, args:ESObject[]) => {
                 if (command === 'finishRefresh') {
@@ -121,7 +119,6 @@ export struct SmartRefreshControl {
                         this.pullToRefreshConfigurator.setFinishDelay(500)
                     }
                     this.finishRefresh?.("finish")
-                    this.isRelease = true
                 }
             });
     }
@@ -184,15 +181,12 @@ export struct SmartRefreshControl {
             this.unlockScrollingCallback = undefined
         }
         // 下拉中
-        if (!this.isRelease) {
-            this.onHeaderPulling(displayedHeaderHeight)
-        } else {
-            this.onHeaderReleasing(displayedHeaderHeight)
+        if (this.displayedHeaderHeight < displayedHeaderHeight) {
+            this.onHeaderPulling(displayedHeaderHeight)  // 下拉中
+        } else if (this.displayedHeaderHeight > displayedHeaderHeight){
+            this.onHeaderReleasing(displayedHeaderHeight) //回弹
         }
         this.displayedHeaderHeight = displayedHeaderHeight
-        if (displayedHeaderHeight == 0){
-            this.isRelease = false
-        }
     }
 
     // 因为子节点还没创建出来，需要延迟获取RNScrollViewManager

@@ -54,8 +54,8 @@ class JSI_EXPORT RNCDefaultHeaderProps final : public ViewProps {
 
 #pragma mark - Props
 
-  std::string primaryColor{};
-  std::string accentColor{};
+  SharedColor primaryColor{};
+  SharedColor accentColor{};
 };
 
 class JSI_EXPORT RNCMaterialHeaderProps final : public ViewProps {

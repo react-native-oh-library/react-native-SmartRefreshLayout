@@ -17,55 +17,64 @@
 #include "EventEmitters.h"
 
 namespace facebook {
-namespace react {
+    namespace react {
 
-void SmartRefreshLayoutEventEmitter::onRefresh(OnRefresh event) const {
-  dispatchEvent("refresh", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    
-    return payload;
-  });
-}
-void SmartRefreshLayoutEventEmitter::onHeaderPulling(OnHeaderPulling event) const {
-  dispatchEvent("headerPulling", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    payload.setProperty(runtime, "percent", event.percent);
-payload.setProperty(runtime, "offset", event.offset);
-payload.setProperty(runtime, "headerHeight", event.headerHeight);
-    return payload;
-  });
-}
-void SmartRefreshLayoutEventEmitter::onHeaderReleasing(OnHeaderReleasing event) const {
-  dispatchEvent("headerReleasing", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    payload.setProperty(runtime, "percent", event.percent);
-payload.setProperty(runtime, "offset", event.offset);
-payload.setProperty(runtime, "headerHeight", event.headerHeight);
-    return payload;
-  });
-}
-void SmartRefreshLayoutEventEmitter::onPullDownToRefresh(OnPullDownToRefresh event) const {
-  dispatchEvent("pullDownToRefresh", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    
-    return payload;
-  });
-}
-void SmartRefreshLayoutEventEmitter::onReleaseToRefresh(OnReleaseToRefresh event) const {
-  dispatchEvent("releaseToRefresh", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    
-    return payload;
-  });
-}
-void SmartRefreshLayoutEventEmitter::onHeaderReleased(OnHeaderReleased event) const {
-  dispatchEvent("headerReleased", [event=std::move(event)](jsi::Runtime &runtime) {
-    auto payload = jsi::Object(runtime);
-    
-    return payload;
-  });
-}
+        void SmartRefreshLayoutEventEmitter::onRefresh(OnRefresh event) const {
+            dispatchEvent("refresh", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onHeaderPulling(OnHeaderPulling event) const {
+            dispatchEvent("headerPulling", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+                payload.setProperty(runtime, "percent", event.percent);
+                payload.setProperty(runtime, "offset", event.offset);
+                payload.setProperty(runtime, "headerHeight", event.headerHeight);
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onHeaderReleasing(OnHeaderReleasing event) const {
+            dispatchEvent("headerReleasing", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+                payload.setProperty(runtime, "percent", event.percent);
+                payload.setProperty(runtime, "offset", event.offset);
+                payload.setProperty(runtime, "headerHeight", event.headerHeight);
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onHeaderMoving(OnHeaderMoving event) const {
+            dispatchEvent("headerMoving", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+                payload.setProperty(runtime, "percent", event.percent);
+                payload.setProperty(runtime, "offset", event.offset);
+                payload.setProperty(runtime, "headerHeight", event.headerHeight);
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onPullDownToRefresh(OnPullDownToRefresh event) const {
+            dispatchEvent("pullDownToRefresh", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onReleaseToRefresh(OnReleaseToRefresh event) const {
+            dispatchEvent("releaseToRefresh", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+
+                return payload;
+            });
+        }
+        void SmartRefreshLayoutEventEmitter::onHeaderReleased(OnHeaderReleased event) const {
+            dispatchEvent("headerReleased", [event = std::move(event)](jsi::Runtime &runtime) {
+                auto payload = jsi::Object(runtime);
+
+                return payload;
+            });
+        }
 
 
-} // namespace react
+    } // namespace react
 } // namespace facebook

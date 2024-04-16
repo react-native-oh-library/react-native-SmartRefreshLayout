@@ -21,93 +21,72 @@
 #include <jsi/jsi.h>
 
 namespace facebook {
-namespace react {
+    namespace react {
 
-class JSI_EXPORT RNCAnyHeaderEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
+        class JSI_EXPORT RNCAnyHeaderEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
+        };
+        class JSI_EXPORT RNCClassicsHeaderEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
+        };
+        class JSI_EXPORT RNCDefaultHeaderEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
+        };
+        class JSI_EXPORT RNCMaterialHeaderEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
+        };
+        class JSI_EXPORT SmartRefreshLayoutEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
 
-  
+            struct OnRefresh {};
 
-  
-};
-class JSI_EXPORT RNCClassicsHeaderEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
+            struct OnHeaderPulling {
+                Float percent;
+                Float offset;
+                Float headerHeight;
+            };
 
-  
+            struct OnHeaderReleasing {
+                Float percent;
+                Float offset;
+                Float headerHeight;
+            };
 
-  
-};
-class JSI_EXPORT RNCDefaultHeaderEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
+            struct OnHeaderMoving {
+                Float percent;
+                Float offset;
+                Float headerHeight;
+            };
+            struct OnPullDownToRefresh {};
 
-  
+            struct OnReleaseToRefresh {};
 
-  
-};
-class JSI_EXPORT RNCMaterialHeaderEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
+            struct OnHeaderReleased {};
 
-  
+            void onRefresh(OnRefresh value) const;
 
-  
-};
-class JSI_EXPORT SmartRefreshLayoutEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
+            void onHeaderPulling(OnHeaderPulling value) const;
 
-  struct OnRefresh {
-      
-    };
+            void onHeaderReleasing(OnHeaderReleasing value) const;
 
-  struct OnHeaderPulling {
-      Float percent;
-    Float offset;
-    Float headerHeight;
-    };
+            void onHeaderMoving(OnHeaderMoving value) const;
 
-  struct OnHeaderReleasing {
-      Float percent;
-    Float offset;
-    Float headerHeight;
-    };
+            void onPullDownToRefresh(OnPullDownToRefresh value) const;
 
-  struct OnPullDownToRefresh {
-      
-    };
+            void onReleaseToRefresh(OnReleaseToRefresh value) const;
 
-  struct OnReleaseToRefresh {
-      
-    };
+            void onHeaderReleased(OnHeaderReleased value) const;
+        };
+        class JSI_EXPORT RNCStoreHouseHeaderEventEmitter : public ViewEventEmitter {
+        public:
+            using ViewEventEmitter::ViewEventEmitter;
+        };
 
-  struct OnHeaderReleased {
-      
-    };
-
-  void onRefresh(OnRefresh value) const;
-
-  void onHeaderPulling(OnHeaderPulling value) const;
-
-  void onHeaderReleasing(OnHeaderReleasing value) const;
-
-  void onPullDownToRefresh(OnPullDownToRefresh value) const;
-
-  void onReleaseToRefresh(OnReleaseToRefresh value) const;
-
-  void onHeaderReleased(OnHeaderReleased value) const;
-};
-class JSI_EXPORT RNCStoreHouseHeaderEventEmitter : public ViewEventEmitter {
- public:
-  using ViewEventEmitter::ViewEventEmitter;
-
-  
-
-  
-};
-
-} // namespace react
+    } // namespace react
 } // namespace facebook
 #endif
