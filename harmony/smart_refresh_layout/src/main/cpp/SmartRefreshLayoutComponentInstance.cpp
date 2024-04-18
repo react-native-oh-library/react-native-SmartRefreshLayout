@@ -31,16 +31,27 @@ namespace rnoh {
     void SmartRefreshLayoutComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                               std::size_t index) {
         CppComponentInstance::onChildInserted(childComponentInstance, index);
+         
+        mWidth = childComponentInstance->getLayoutMetrics().frame.size.width;
         if (!isHeaderInserted) {
+            std::vector<ComponentInstance::Shared> child = childComponentInstance->getChildren();
+            float childHeight = 0.0;
+            for (ComponentInstance::Shared c : child) {
+                if (c) {
+                    auto height = c->getLayoutMetrics().frame.size.height;
+                    if (height>childHeight) {
+                        childHeight = height;
+                    }
+                }
+            }
+            childComponentInstance->getLocalRootArkUINode().setSize(facebook::react::Size({mWidth, childHeight}));
             m_headerStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
 
             isHeaderInserted = true;
         } else {
             m_listStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
         }
-        auto nodeValue =
-            NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
-        mWidth = nodeValue->value[nodeValue->size - 1].f32;
+    
         m_headerStackNode.setSize(facebook::react::Size({mWidth, 0}));
         setOtherHeaderDelegate();
     }
