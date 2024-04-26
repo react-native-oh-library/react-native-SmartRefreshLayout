@@ -19,7 +19,7 @@ namespace rnoh {
 
     private:
         StackNode m_stackNode;
-        ArkUI_NodeHandle imageStack;
+        ArkUI_NodeHandle imageStack{m_stackNode.getArkUINodeHandle()};
         LoadingProgressNode progressNode;
         float mWindowWidth{0.0};
         bool isRefreshed{false};

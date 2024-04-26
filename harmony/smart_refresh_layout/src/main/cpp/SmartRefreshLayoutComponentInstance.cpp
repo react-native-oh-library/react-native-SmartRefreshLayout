@@ -71,8 +71,7 @@ namespace rnoh {
         auto panGesture = gestureApi->createPanGesture(1, GESTURE_DIRECTION_VERTICAL, 5);
         auto onPanActionCallBack = [](ArkUI_GestureEvent *event, void *extraParam) {
             SmartRefreshLayoutComponentInstance *instance = (SmartRefreshLayoutComponentInstance *)extraParam;
-            if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh() ||
-                !instance->isComponentTop()) {
+            if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh()) {
                 return;
             }
             ArkUI_GestureEventActionType actionType = OH_ArkUI_GestureEvent_GetActionType(event);
@@ -80,6 +79,7 @@ namespace rnoh {
                 instance->offsetY = 0;
                 instance->downY = OH_ArkUI_PanGesture_GetOffsetY(event);
                 instance->touchYOld = instance->offsetY;
+                instance->onPullDownToRefresh();
             } else if (actionType == GESTURE_EVENT_ACTION_UPDATE) {
                 instance->offsetY = OH_ArkUI_PanGesture_GetOffsetY(event) - instance->downY;
                 if (instance->offsetY >= 0) {
