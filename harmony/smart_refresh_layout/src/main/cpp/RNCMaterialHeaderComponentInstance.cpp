@@ -54,7 +54,7 @@ namespace rnoh {
             {.u32 = shadowColorValue},
             {.u32 = 0}
          };
-        ArkUI_AttributeItem shadowItem[] = {.value = shadowValue,.size = sizeof(shadowValue)/sizeof(ArkUI_NumberValue)};
+        ArkUI_AttributeItem shadowItem = {.value = shadowValue,.size = sizeof(shadowValue)/sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(imageStack, NODE_CUSTOM_SHADOW, &shadowItem);
     
         ArkUI_NumberValue z_indexArray[] = {{.f32 = 1000}};
