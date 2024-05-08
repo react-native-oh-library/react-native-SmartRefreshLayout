@@ -15,5 +15,7 @@ namespace rnoh {
         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
 
         StackNode &getLocalRootArkUINode() override;
+        
+         void finalizeUpdates() override;
     };
 } // namespace rnoh

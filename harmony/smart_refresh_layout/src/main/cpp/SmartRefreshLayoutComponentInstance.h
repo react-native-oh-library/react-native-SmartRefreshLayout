@@ -19,6 +19,7 @@ namespace rnoh {
         PullToRefreshNode m_pullToRefreshNode;
         StackNode m_headerStackNode;
         StackNode m_listStackNode;
+        StackNode packageHeaderNode;
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
         std::shared_ptr<rnoh::HeaderNodeDelegate> delegate;
         bool overScrollBounce{true};
@@ -51,7 +52,11 @@ namespace rnoh {
         void onPropsChanged(SharedConcreteProps const &props) override;
 
         bool isComponentTop() override;
-
+        
+        void setHeaderChildSize();
+        void finalizeUpdates() override;   
+        void setNodeWidth(ArkUINode &arkUINode,float width);
+    
         PullToRefreshNode &getLocalRootArkUINode() override;
         void onNativeResponderBlockChange(bool isBlocked)override;
         void panGesture(ArkUI_NodeHandle arkUI_NodeHandle);

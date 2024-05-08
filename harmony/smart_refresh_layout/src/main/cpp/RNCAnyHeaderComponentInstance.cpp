@@ -23,4 +23,18 @@ namespace rnoh {
 
     StackNode &RNCAnyHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
+    void RNCAnyHeaderComponentInstance::finalizeUpdates() {
+        std::vector<ComponentInstance::Shared> child = getChildren();
+            float childHeight = 0.0;
+            for (ComponentInstance::Shared c : child) {
+                if (c) {
+                    auto height = c->getLayoutMetrics().frame.size.height;
+                    if (height>childHeight) {
+                        childHeight = height;
+                    }
+                }
+            }
+        m_stackNode.setSize(facebook::react::Size({ getLayoutMetrics().frame.size.width, childHeight}));
+    }
+
 } // namespace rnoh

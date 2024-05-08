@@ -18,7 +18,8 @@ namespace rnoh {
 
         m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
         m_pullToRefreshNode.insertChild(m_listStackNode, 1);
-
+        m_headerStackNode.setAlign(ARKUI_ALIGNMENT_BOTTOM);
+        m_headerStackNode.setAlignment(ARKUI_ALIGNMENT_BOTTOM);
         m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
 
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
@@ -27,6 +28,23 @@ namespace rnoh {
         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     }
 
+    void SmartRefreshLayoutComponentInstance::finalizeUpdates() {
+        setHeaderChildSize();
+    }  
+
+    void SmartRefreshLayoutComponentInstance::setHeaderChildSize(){
+        if (mWidth != getLayoutMetrics().frame.size.width) {
+            mWidth = getLayoutMetrics().frame.size.width;
+        }
+        setNodeWidth(packageHeaderNode,mWidth);
+        setNodeWidth(m_headerStackNode,mWidth);
+    }
+
+    void SmartRefreshLayoutComponentInstance::setNodeWidth(ArkUINode &arkUINode,float width) {
+        ArkUI_NumberValue widthValue[] = { width };
+        ArkUI_AttributeItem widthItem = {widthValue, sizeof(widthValue) / sizeof(ArkUI_NumberValue)};
+        NativeNodeApi::getInstance()->setAttribute(arkUINode.getArkUINodeHandle(), NODE_WIDTH, &widthItem);
+    }
 
     void SmartRefreshLayoutComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                               std::size_t index) {
@@ -34,19 +52,8 @@ namespace rnoh {
          
         mWidth = childComponentInstance->getLayoutMetrics().frame.size.width;
         if (!isHeaderInserted) {
-            std::vector<ComponentInstance::Shared> child = childComponentInstance->getChildren();
-            float childHeight = 0.0;
-            for (ComponentInstance::Shared c : child) {
-                if (c) {
-                    auto height = c->getLayoutMetrics().frame.size.height;
-                    if (height>childHeight) {
-                        childHeight = height;
-                    }
-                }
-            }
-            childComponentInstance->getLocalRootArkUINode().setSize(facebook::react::Size({mWidth, childHeight}));
-            m_headerStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
-
+            packageHeaderNode.insertChild(childComponentInstance->getLocalRootArkUINode(), 0);
+            m_headerStackNode.insertChild(packageHeaderNode, index);
             isHeaderInserted = true;
         } else {
             m_listStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
