@@ -18,8 +18,8 @@ namespace rnoh {
 
     void RNCMaterialHeaderComponentInstance::addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node) {
         mWindowWidth = screenWidth;
-        progressNode.setLoadingProgressNodeColor(0x53658461);
-        progressNode.setLoadingProgressNodeAnimating(true);
+        progressNode.setColor(0x53658461);
+        progressNode.setAnimating(true);
         progressNode.setSize({45, 45});
     
         ArkUI_NumberValue heightArray[] = {{.f32 = 45}};
@@ -120,16 +120,16 @@ namespace rnoh {
         case IS_PULL_DOWN_1:
         case IS_PULL_DOWN_2: {
             isRefreshed = false;
-            progressNode.setLoadingProgressNodeColor(0xff0099cc);
+            progressNode.setColor(0xff0099cc);
         } break;
         case IS_REFRESHING: {
-            progressNode.setLoadingProgressNodeColor(0xffff4444);
+            progressNode.setColor(0xffff4444);
         }
 
         break;
         case IS_REFRESHED: {
             isRefreshed = true;
-            progressNode.setLoadingProgressNodeColor(0xffaa66cc);
+            progressNode.setColor(0xffaa66cc);
             setScaleAnimate(1000);
         } break;
         }

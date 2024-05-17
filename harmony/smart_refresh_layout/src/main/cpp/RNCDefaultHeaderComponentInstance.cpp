@@ -25,8 +25,8 @@ namespace rnoh {
         imageNode.setSize({30, 15});
         imageNode.setResizeMode(facebook::react::ImageResizeMode::Contain);
 
-        progressNode.setLoadingProgressNodeColor(0x53658461);
-        progressNode.setLoadingProgressNodeAnimating(true);
+        progressNode.setColor(0x53658461);
+        progressNode.setAnimating(true);
         progressNode.setSize({50, 50});
 
 
