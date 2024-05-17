@@ -17,11 +17,8 @@ namespace rnoh {
         textNode.setTextContent("下拉刷新");
         textNode.setFontSize(15);
         textNode.setFontColor(0xffaaaaaa);
-
-        facebook::react::ImageSources imageSources;
-        imageSources.push_back({.uri = "resource://BASE/media/icon_up.png"});
-
-        imageNode.setSources(imageSources);
+    
+        imageNode.setSources("resource://BASE/media/icon_up.png");
         imageNode.setSize({30, 15});
         imageNode.setResizeMode(facebook::react::ImageResizeMode::Contain);
 

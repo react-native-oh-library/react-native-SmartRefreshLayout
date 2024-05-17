@@ -16,16 +16,12 @@ namespace rnoh {
         LOG(INFO) << "[tyBrave] <RNCClassicsHeaderComponentInstance {}";
 
         mColumnHandle = NativeNodeApi::getInstance()->createNode(ARKUI_NODE_ROW);
-
-        facebook::react::ImageSources imageSources;
-        imageSources.push_back({.uri = "resource://BASE/media/icon_up.png"});
-        imageNode.setSources(imageSources);
+    
+        imageNode.setSources("resource://BASE/media/icon_up.png");
         imageNode.setSize({30, 20});
         imageNode.setResizeMode(facebook::react::ImageResizeMode::Contain);
-
-        facebook::react::ImageSources imageUpdateSources;
-        imageUpdateSources.push_back({.uri = "resource://BASE/media/icon_load.png"});
-        updateImageNode.setSources(imageUpdateSources);
+    
+        updateImageNode.setSources("resource://BASE/media/icon_load.png");
         updateImageNode.setSize({25, 25});
         updateImageNode.setResizeMode(facebook::react::ImageResizeMode::Contain);
 
