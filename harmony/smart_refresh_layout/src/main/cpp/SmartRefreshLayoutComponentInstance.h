@@ -3,11 +3,11 @@
 #include "HeaderNodeDelegate.h"
 #include "Props.h"
 #include "RNOH/CppComponentInstance.h"
-#include "RNOH/arkui/StackNode.h"
 #include "PullToRefreshNode.h"
 #include "EventEmitters.h"
 #include "ShadowNodes.h"
 #include "SmartRefreshState.h"
+#include "SmartStackNode.h"
 
 std::string globalHeaderType = "RNCDefaultHeader";
 
@@ -17,9 +17,9 @@ namespace rnoh {
           public PullToRefreshNodeDelegate {
     private:
         PullToRefreshNode m_pullToRefreshNode;
-        StackNode m_headerStackNode;
-        StackNode m_listStackNode;
-        StackNode packageHeaderNode;
+        SmartStackNode m_headerStackNode;
+        SmartStackNode m_listStackNode;
+        SmartStackNode packageHeaderNode;
         std::shared_ptr<const facebook::react::SmartRefreshLayoutEventEmitter> m_smartRefreshLayoutEventEmitter;
         std::shared_ptr<rnoh::HeaderNodeDelegate> delegate;
         bool overScrollBounce{true};

@@ -7,20 +7,18 @@
 #pragma once
 #include "HeaderNodeDelegate.h"
 #include "RNOH/CppComponentInstance.h"
-#include "RNOH/arkui/StackNode.h"
-#include "RNOH/arkui/TextNode.h"
-#include "RNOH/arkui/LoadingProgressNode.h"
 #include "ShadowNodes.h"
-
+#include "SmartProgressNode.h"
+#include "SmartStackNode.h"
 namespace rnoh {
     class RNCMaterialHeaderComponentInstance
         : public CppComponentInstance<facebook::react::RNCMaterialHeaderShadowNode>,
           public HeaderNodeDelegate {
 
     private:
-        StackNode m_stackNode;
+        SmartStackNode m_stackNode;
         ArkUI_NodeHandle imageStack{m_stackNode.getArkUINodeHandle()};
-        LoadingProgressNode progressNode;
+        SmartProgressNode progressNode;
         float mWindowWidth{0.0};
         bool isRefreshed{false};
 
@@ -29,7 +27,7 @@ namespace rnoh {
         void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
         void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
     
-        StackNode &getLocalRootArkUINode() override;
+        SmartStackNode &getLocalRootArkUINode() override;
         void onRefreshStatusChange(int32_t status) override;
         void addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node) override;
         void onHeaderMove(float dur) override;

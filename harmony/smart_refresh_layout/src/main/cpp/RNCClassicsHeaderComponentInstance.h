@@ -7,10 +7,10 @@
 #pragma once
 #include "HeaderNodeDelegate.h"
 #include "RNOH/CppComponentInstance.h"
-#include "RNOH/arkui/StackNode.h"
-#include "RNOH/arkui/TextNode.h"
-#include "RNOH/arkui/ImageNode.h"
 #include "ShadowNodes.h"
+#include "SmartImageNode.h"
+#include "SmartStackNode.h"
+#include "SmartTextNode.h"
 
 namespace rnoh {
     class RNCClassicsHeaderComponentInstance
@@ -18,11 +18,11 @@ namespace rnoh {
           public HeaderNodeDelegate {
 
     private:
-        StackNode m_stackNode;
-        ImageNode imageNode;
-        ImageNode updateImageNode;
-        TextNode textNode;
-        TextNode timeTextNode;
+        SmartStackNode m_stackNode;
+        SmartImageNode imageNode;
+        SmartImageNode updateImageNode;
+        SmartTextNode textNode;
+        SmartTextNode timeTextNode;
         ArkUI_NodeHandle mColumnHandle;
         std::string primaryColor{""};
 
@@ -33,7 +33,7 @@ namespace rnoh {
         void onPropsChanged(SharedConcreteProps const &props) override;
 
         void finalizeUpdates() override;
-        StackNode &getLocalRootArkUINode() override;
+        SmartStackNode &getLocalRootArkUINode() override;
         void onRefreshStatusChange(int32_t status) override;
         std::string getDefaultHeaderBackGroundColor() { return primaryColor; }
         void setImageRotate(float angle);

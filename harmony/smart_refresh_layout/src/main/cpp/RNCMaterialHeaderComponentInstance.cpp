@@ -104,7 +104,7 @@ namespace rnoh {
         m_stackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    StackNode &RNCMaterialHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
+    SmartStackNode &RNCMaterialHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
 
     void RNCMaterialHeaderComponentInstance::onRefreshStatusChange(int32_t status) {

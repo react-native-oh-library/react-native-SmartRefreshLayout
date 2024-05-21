@@ -13,7 +13,6 @@ namespace rnoh {
 
     RNCDefaultHeaderComponentInstance::RNCDefaultHeaderComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {
-        LOG(INFO) << "[tyBrave] <RNCDefaultHeaderComponentInstance {}";
         textNode.setTextContent("下拉刷新");
         textNode.setFontSize(15);
         textNode.setFontColor(0xffaaaaaa);
@@ -54,7 +53,7 @@ namespace rnoh {
         m_stackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    StackNode &RNCDefaultHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
+    SmartStackNode &RNCDefaultHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
     void RNCDefaultHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         if (props != nullptr) {

@@ -1,7 +1,6 @@
 #include "SmartRefreshLayoutComponentInstance.h"
 #include <folly/dynamic.h>
 #include "RNOH/arkui/ArkUINode.h"
-#include "RNOH/arkui/ScrollNode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
 #include "react/renderer/graphics/Color.h"
 #include <arkui/native_interface.h>

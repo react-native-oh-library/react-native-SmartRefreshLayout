@@ -21,7 +21,7 @@ namespace rnoh {
         m_stackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    StackNode &RNCAnyHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
+    SmartStackNode &RNCAnyHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
     void RNCAnyHeaderComponentInstance::finalizeUpdates() {
         std::vector<ComponentInstance::Shared> child = getChildren();
