@@ -13,8 +13,6 @@ namespace rnoh {
 
     RNCClassicsHeaderComponentInstance::RNCClassicsHeaderComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {
-        LOG(INFO) << "[tyBrave] <RNCClassicsHeaderComponentInstance {}";
-
         mColumnHandle = NativeNodeApi::getInstance()->createNode(ARKUI_NODE_ROW);
 
         facebook::react::ImageSources imageSources;
@@ -78,7 +76,7 @@ namespace rnoh {
         m_stackNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    StackNode &RNCClassicsHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
+    SmartStackNode &RNCClassicsHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
     void RNCClassicsHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         if (props != nullptr) {

@@ -1,7 +1,6 @@
 #include "SmartRefreshLayoutComponentInstance.h"
 #include <folly/dynamic.h>
 #include "RNOH/arkui/ArkUINode.h"
-#include "RNOH/arkui/ScrollNode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
 #include "react/renderer/graphics/Color.h"
 #include <arkui/native_interface.h>
@@ -18,7 +17,8 @@ namespace rnoh {
 
         m_pullToRefreshNode.insertChild(m_headerStackNode, 0);
         m_pullToRefreshNode.insertChild(m_listStackNode, 1);
-
+        m_headerStackNode.setAlign(ARKUI_ALIGNMENT_BOTTOM);
+        m_headerStackNode.setAlignment(ARKUI_ALIGNMENT_BOTTOM);
         m_pullToRefreshNode.setPullToRefreshNodeDelegate(this);
 
         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
@@ -27,20 +27,37 @@ namespace rnoh {
         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     }
 
+    void SmartRefreshLayoutComponentInstance::finalizeUpdates() {
+        setHeaderChildSize();
+    }  
+
+    void SmartRefreshLayoutComponentInstance::setHeaderChildSize(){
+        if (mWidth != getLayoutMetrics().frame.size.width) {
+            mWidth = getLayoutMetrics().frame.size.width;
+        }
+        setNodeWidth(packageHeaderNode,mWidth);
+        setNodeWidth(m_headerStackNode,mWidth);
+    }
+
+    void SmartRefreshLayoutComponentInstance::setNodeWidth(ArkUINode &arkUINode,float width) {
+        ArkUI_NumberValue widthValue[] = { width };
+        ArkUI_AttributeItem widthItem = {widthValue, sizeof(widthValue) / sizeof(ArkUI_NumberValue)};
+        NativeNodeApi::getInstance()->setAttribute(arkUINode.getArkUINodeHandle(), NODE_WIDTH, &widthItem);
+    }
 
     void SmartRefreshLayoutComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance,
                                                               std::size_t index) {
         CppComponentInstance::onChildInserted(childComponentInstance, index);
+         
+        mWidth = childComponentInstance->getLayoutMetrics().frame.size.width;
         if (!isHeaderInserted) {
-            m_headerStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
-
+            packageHeaderNode.insertChild(childComponentInstance->getLocalRootArkUINode(), 0);
+            m_headerStackNode.insertChild(packageHeaderNode, index);
             isHeaderInserted = true;
         } else {
             m_listStackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
         }
-        auto nodeValue =
-            NativeNodeApi::getInstance()->getAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_WIDTH);
-        mWidth = nodeValue->value[nodeValue->size - 1].f32;
+    
         m_headerStackNode.setSize(facebook::react::Size({mWidth, 0}));
         setOtherHeaderDelegate();
     }
@@ -55,12 +72,12 @@ namespace rnoh {
     PullToRefreshNode &SmartRefreshLayoutComponentInstance::getLocalRootArkUINode() { return m_pullToRefreshNode; }
 
     void SmartRefreshLayoutComponentInstance::panGesture(ArkUI_NodeHandle arkUI_NodeHandle) {
-        auto gestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(OH_ArkUI_GetNativeAPI(ARKUI_NATIVE_GESTURE, 1));
+        auto anyGestureApi = OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_GESTURE, "ArkUI_NativeGestureAPI_1");
+        auto gestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(anyGestureApi);
         auto panGesture = gestureApi->createPanGesture(1, GESTURE_DIRECTION_VERTICAL, 5);
         auto onPanActionCallBack = [](ArkUI_GestureEvent *event, void *extraParam) {
             SmartRefreshLayoutComponentInstance *instance = (SmartRefreshLayoutComponentInstance *)extraParam;
-            if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh() ||
-                !instance->isComponentTop()) {
+            if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh()) {
                 return;
             }
             ArkUI_GestureEventActionType actionType = OH_ArkUI_GestureEvent_GetActionType(event);
@@ -68,6 +85,7 @@ namespace rnoh {
                 instance->offsetY = 0;
                 instance->downY = OH_ArkUI_PanGesture_GetOffsetY(event);
                 instance->touchYOld = instance->offsetY;
+                instance->onPullDownToRefresh();
             } else if (actionType == GESTURE_EVENT_ACTION_UPDATE) {
                 instance->offsetY = OH_ArkUI_PanGesture_GetOffsetY(event) - instance->downY;
                 if (instance->offsetY >= 0) {
