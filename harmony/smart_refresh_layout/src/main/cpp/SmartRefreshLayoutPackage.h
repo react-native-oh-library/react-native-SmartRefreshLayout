@@ -43,8 +43,6 @@ namespace rnoh {
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
-            LOG(INFO) << "[tyBrave] <SmartRefreshLayoutPackageComponentInstanceFactoryDelegate s------:"
-                      << ctx.componentName;
             if (ctx.componentName == "RNCAnyHeader") {
                 globalHeaderType = "RNCAnyHeader";
                 return std::make_shared<RNCAnyHeaderComponentInstance>(std::move(ctx));

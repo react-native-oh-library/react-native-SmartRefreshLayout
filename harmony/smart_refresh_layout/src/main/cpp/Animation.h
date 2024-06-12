@@ -51,7 +51,6 @@ public:
 
     void UpdateLoop() {
         state_ = Animation_State::ANIMATION_RUN;
-        LOG(INFO) << "[tyBrave] Animation startValue_: " << startValue_ << ";currentValue_:" << currentValue_;
         const double p0 = 0.1, p1 = 0.0, p2 = 0.58, p3 = 1.0; // CubicBezier控制点
         auto startTime = std::chrono::high_resolution_clock::now();
         for (double t = 0.0; t < 1.01; t += 0.01) {
@@ -95,7 +94,6 @@ private:
             delete updateThread_; // 如果使用new分配，则需要delete释放
             updateThread_ = nullptr;
         }
-        LOG(INFO) << "[tyBrave] Animation startValue_ssss cancelAnimation end";
     }
 };
 #endif // HARMONY_ANIMATION_H
