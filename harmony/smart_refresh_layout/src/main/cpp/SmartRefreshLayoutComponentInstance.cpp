@@ -264,7 +264,6 @@ namespace rnoh {
         m_pullToRefreshNode.setEnableRefresh(props->enableRefresh);
         m_pullToRefreshNode.setMaxTranslate(props->headerHeight * 2);
         m_pullToRefreshNode.setHeaderBackgroundColor(headerColor);
-        LOG(INFO) << "[tyBrave] <SmartRefreshLayoutComponentInstance onPropsChanged{}";
     }
 
 
@@ -325,23 +324,6 @@ namespace rnoh {
                     //
                     //                                 std::stringstream ss;
                     //                                 ss << std::hex << (255 | red << 24 | green << 16 | blue << 8);
-                    //
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}ss:"
-                    //                                     << ss.str();
-                    //
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}red:"
-                    //                                     << str.substr(0, 2) << ";green:" << str.substr(2, 2) <<
-                    //                                     ";blue:" << str.substr(4, 2)
-                    //                                     << ";s:" << s << ";str:" << str;
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}red:"
-                    //                                     << red << ";green:" << green << ";blue:" << blue << ";s:" <<
-                    //                                     s << ";str:" << str;
                     //                                 m_pullToRefreshNode.setHeaderBackgroundColor(0xffffff00);
                     //                             }
                     //
