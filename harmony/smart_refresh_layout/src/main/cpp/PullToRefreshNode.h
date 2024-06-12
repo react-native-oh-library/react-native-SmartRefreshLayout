@@ -41,8 +41,6 @@ namespace rnoh {
         void setMaxTranslate(float maxHeight);
         void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
-
-//         void onNodeEvent(ArkUI_NodeEvent *event) override;
     };
 
 } // namespace rnoh
