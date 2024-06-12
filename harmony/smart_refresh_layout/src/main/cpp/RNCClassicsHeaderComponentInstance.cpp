@@ -81,9 +81,6 @@ namespace rnoh {
     void RNCClassicsHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         if (props != nullptr) {
             //             facebook::react::SharedColor headerColor = props->primaryColor;
-            //             LOG(INFO) << "[tyBrave] <SmartRefreshLayoutComponentInstance ---------------" <<
-            //             props->accentColor
-            //                       << ";sss:" << props->primaryColor;
             //             if (props->accentColor) {
             //                 textNode.setFontColor(props->accentColor);
             //                 imageNode.setTintColor(props->accentColor);
