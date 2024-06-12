@@ -28,10 +28,6 @@ namespace rnoh {
         facebook::react::SharedColor refreshColor = 0xFF6495ED; // 下拉动画颜色
 
         facebook::react::SharedColor refreshBackgroundColor = 0xFF64811D; // 下拉动画区域背景色
-        //
-        //         refreshTextColor ?: ResourceColor = '#999999'; // 下拉加载完毕后提示文本的字体颜色
-        //
-        //         refreshTextSize ?: number | string | Resource = 18; // 下拉加载完毕后提示文本的字体大小
 
         uint32_t refreshAnimDuration{1000}; // 下拉动画执行一次的时间
         uint32_t loadImgHeight{30};         // 上拉图片高度
@@ -95,16 +91,6 @@ namespace rnoh {
             this->refreshBackgroundColor = refreshBackgroundColor;
         }
         facebook::react::SharedColor getRefreshBackgroundColor() { return this->refreshBackgroundColor; }
-        //         PullToRefreshConfigurator setRefreshTextColor(bool listIsPlacement);
-        //         bool getRefreshTextColor();
-        //         PullToRefreshConfigurator setRefreshTextSize(bool listIsPlacement);
-        //         bool getRefreshTextSize();
-        //         PullToRefreshConfigurator setLoadBackgroundColor(bool listIsPlacement);
-        //         bool getLoadBackgroundColor();
-        //         PullToRefreshConfigurator setLoadTextColor(bool listIsPlacement);
-        //         bool getLoadTextColor();
-        //         PullToRefreshConfigurator setLoadTextSize(bool listIsPlacement);
-        //         bool getLoadTextSize();
         PullToRefreshConfigurator setRefreshAnimDuration(const uint32_t refreshAnimDuration) {
             this->refreshAnimDuration = refreshAnimDuration;
             return *this;

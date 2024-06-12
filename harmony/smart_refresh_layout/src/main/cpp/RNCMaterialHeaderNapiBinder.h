@@ -18,8 +18,6 @@ namespace rnoh {
                     std::dynamic_pointer_cast<const facebook::react::RNCMaterialHeaderProps>(shadowView.props)) {
                 return ArkJS(env)
                     .getObjectBuilder(napiBaseProps)
-//                     .addProperty("primaryColor", props->primaryColor)
-//                     .addProperty("accentColor", props->accentColor)
                     .build();
             }
             return napiBaseProps;

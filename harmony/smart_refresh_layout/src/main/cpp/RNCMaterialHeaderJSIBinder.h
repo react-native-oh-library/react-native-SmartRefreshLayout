@@ -18,8 +18,6 @@ namespace rnoh {
 
         facebook::jsi::Object createNativeProps(facebook::jsi::Runtime &rt) override {
             auto nativeProps = ViewComponentJSIBinder::createNativeProps(rt);
-//             nativeProps.setProperty(rt, "primaryColor", "number");
-//             nativeProps.setProperty(rt, "accentColor", "number");
             return nativeProps;
         }
     };

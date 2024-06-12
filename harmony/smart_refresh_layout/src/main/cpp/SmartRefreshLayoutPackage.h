@@ -80,8 +80,6 @@ namespace rnoh {
                     facebook::react::RNCDefaultHeaderComponentDescriptor>(),
                 facebook::react::concreteComponentDescriptorProvider<
                     facebook::react::RNCMaterialHeaderComponentDescriptor>(),
-                //              facebook::react::concreteComponentDescriptorProvider<
-                //                  facebook::react::RNCStoreHouseHeaderComponentDescriptor>(),
                 facebook::react::concreteComponentDescriptorProvider<
                     facebook::react::RNCClassicsHeaderComponentDescriptor>(),
             };

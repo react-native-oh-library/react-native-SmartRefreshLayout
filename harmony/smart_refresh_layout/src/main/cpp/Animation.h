@@ -83,8 +83,6 @@ private:
 
     double cubicBezier(double t, double p0, double p1, double p2, double p3) {
         return (1 - t) * p0 + p3 * t;
-        //         return pow(1 - t, 3) * p0 + 3 * pow(1 - t, 2) * t * p1 + 3 * (1 - t) * pow(t, 2) * p2 + pow(t, 3) *
-        //         p3;
     }
     void cancelAnimation() {
         state_ = Animation_State::ANIMATION_FREE;

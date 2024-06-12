@@ -79,13 +79,6 @@ namespace rnoh {
     SmartStackNode &RNCClassicsHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
     void RNCClassicsHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
-        if (props != nullptr) {
-            //             facebook::react::SharedColor headerColor = props->primaryColor;
-            //             if (props->accentColor) {
-            //                 textNode.setFontColor(props->accentColor);
-            //                 imageNode.setTintColor(props->accentColor);
-            //             }
-        }
     }
 
     void RNCClassicsHeaderComponentInstance::finalizeUpdates() {

@@ -264,7 +264,6 @@ namespace rnoh {
         m_pullToRefreshNode.setEnableRefresh(props->enableRefresh);
         m_pullToRefreshNode.setMaxTranslate(props->headerHeight * 2);
         m_pullToRefreshNode.setHeaderBackgroundColor(headerColor);
-        LOG(INFO) << "[tyBrave] <SmartRefreshLayoutComponentInstance onPropsChanged{}";
     }
 
 
@@ -311,45 +310,6 @@ namespace rnoh {
                         NativeNodeApi::getInstance()->setAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
                         delegate->addHeader(mWidth, 3, &m_pullToRefreshNode);
                     }
-                    //                     if (defaultHeaderInstance != nullptr &&
-                    //                         !defaultHeaderInstance->getDefaultHeaderBackGroundColor().empty()) {
-                    //                         std::string str =
-                    //                         defaultHeaderInstance->getDefaultHeaderBackGroundColor(); if
-                    //                         (str.find("#") == 0) {
-                    //                             str.erase(std::remove(str.begin(), str.end(), '#'), str.end());
-                    //                             if (str.length() == 6) {
-                    //                                 int red = std::stoi(str.substr(0, 2), nullptr, 16);
-                    //                                 int green = std::stoi(str.substr(2, 2), nullptr, 16);
-                    //                                 int blue = std::stoi(str.substr(4, 2), nullptr, 16);
-                    //                                 int s = red << 24 | green << 16 | blue << 8;
-                    //
-                    //                                 std::stringstream ss;
-                    //                                 ss << std::hex << (255 | red << 24 | green << 16 | blue << 8);
-                    //
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}ss:"
-                    //                                     << ss.str();
-                    //
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}red:"
-                    //                                     << str.substr(0, 2) << ";green:" << str.substr(2, 2) <<
-                    //                                     ";blue:" << str.substr(4, 2)
-                    //                                     << ";s:" << s << ";str:" << str;
-                    //                                 LOG(INFO)
-                    //                                     << "[tyBrave] <SmartRefreshLayoutComponentInstance
-                    //                                     setDefaultHeaderInstance{}red:"
-                    //                                     << red << ";green:" << green << ";blue:" << blue << ";s:" <<
-                    //                                     s << ";str:" << str;
-                    //                                 m_pullToRefreshNode.setHeaderBackgroundColor(0xffffff00);
-                    //                             }
-                    //
-                    //                             //
-                    //                             m_pullToRefreshNode.setHeaderBackgroundColor(std::stoi(str.insert(0,
-                    //                             //                             "0x"), 0, 16));
-                    //                         }
-                    //                     }
                     break;
                 }
             }
