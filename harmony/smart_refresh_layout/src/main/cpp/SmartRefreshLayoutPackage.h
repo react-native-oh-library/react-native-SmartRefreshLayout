@@ -35,6 +35,7 @@
 #include "RNCDefaultHeaderComponentInstance.h"
 #include "RNCClassicsHeaderComponentInstance.h"
 #include "RNCMaterialHeaderComponentInstance.h"
+#include "RNCSmartRefreshTurboModule.h"
 
 namespace rnoh {
 
@@ -62,6 +63,16 @@ namespace rnoh {
         }
     };
 
+    class RNCSmartRefreshFactoryDelegate : public TurboModuleFactoryDelegate {
+    public:
+        SharedTurboModule createTurboModule(Context ctx, const std::string &name) const override {
+            if (name == "RNCSmartRefreshContext") {
+                return std::make_shared<RNCSmartRefreshTurboModule>(ctx, name);
+            }
+            return nullptr;
+        };
+    };
+
     class SmartRefreshLayoutPackage : public Package {
     public:
         SmartRefreshLayoutPackage(Package::Context ctx) : Package(ctx) {}
@@ -70,6 +81,10 @@ namespace rnoh {
             return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>();
         }
 
+       std::unique_ptr<TurboModuleFactoryDelegate> createTurboModuleFactoryDelegate() override {
+            return std::make_unique<RNCSmartRefreshFactoryDelegate>();
+        }
+    
         std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {
             return {
                 facebook::react::concreteComponentDescriptorProvider<

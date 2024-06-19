@@ -15,3 +15,4 @@
 export * from "./src/main/ets/SmartRefreshControl"
 export * from "./src/main/ets/RNCAnyHeader"
 export * from "./src/main/ets/RNCDefaultHeader"
+export * from './ts'
