@@ -17,6 +17,7 @@ namespace rnoh {
         virtual void onHeaderReleased(){};
         virtual void onReleaseToRefresh(){};
         virtual bool isComponentTop(){};
+        virtual void onAppArea(){};
     };
 
     class PullToRefreshNode : public ArkUINode {
@@ -41,6 +42,7 @@ namespace rnoh {
         void setMaxTranslate(float maxHeight);
         void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
+        void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
     };
 
 } // namespace rnoh

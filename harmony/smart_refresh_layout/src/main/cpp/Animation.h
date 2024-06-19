@@ -88,7 +88,9 @@ private:
         state_ = Animation_State::ANIMATION_FREE;
         // 等待线程结束
         if (updateThread_ != nullptr) {
-            updateThread_->join();
+            if (updateThread_->joinable()) {
+                updateThread_->join();
+            }
             delete updateThread_; // 如果使用new分配，则需要delete释放
             updateThread_ = nullptr;
         }

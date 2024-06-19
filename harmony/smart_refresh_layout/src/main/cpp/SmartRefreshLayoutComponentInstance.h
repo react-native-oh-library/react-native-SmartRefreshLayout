@@ -37,6 +37,7 @@ namespace rnoh {
         int32_t state{IS_FREE};
         int32_t touchYOld{0};
         int32_t touchYNew{0};
+        float oldHeaderTop{0.0};
         int32_t downY{0};   // first down touch on Y
         int32_t offsetY{0}; // pan offset on Y
         Animation *animation{nullptr};
@@ -74,7 +75,8 @@ namespace rnoh {
         void onPullDownToRefresh() override;
         void onReleaseToRefresh() override;
         void onHeaderReleased() override;
-
+        void onAppArea() override;
+    
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
 
 

@@ -14,6 +14,12 @@ namespace rnoh {
         m_pullToRefreshNodeDelegate = pullToRefreshNodeDelegate;
     }
 
+   void PullToRefreshNode::onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) {
+        if (eventType == ArkUI_NodeEventType::NODE_EVENT_ON_APPEAR) {
+            m_pullToRefreshNodeDelegate->onAppArea();
+        }
+    }
+
     void PullToRefreshNode::insertChild(ArkUINode &child, std::size_t index) {
         if (index == 0) {
             m_headerArkUINodeHandle = child.getArkUINodeHandle();

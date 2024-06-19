@@ -1,7 +1,9 @@
 #include "SmartRefreshLayoutComponentInstance.h"
 #include <folly/dynamic.h>
+#include <bits/alltypes.h>
 #include "RNOH/arkui/ArkUINode.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
+#include "TaskProcessor.h"
 #include "react/renderer/graphics/Color.h"
 #include <arkui/native_interface.h>
 #include <arkui/native_node.h>
@@ -25,7 +27,25 @@ namespace rnoh {
         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
         NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
         panGesture(m_pullToRefreshNode.getArkUINodeHandle());
+        NativeNodeApi::getInstance()->registerNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_APPEAR,
+                                                        NODE_EVENT_ON_APPEAR, this);
     }
+
+    void SmartRefreshLayoutComponentInstance::onAppArea() {
+        if (this->autoRefresh.refresh) {
+            int32_t delayTime = (int32_t)autoRefresh.time;
+            if (delayTime > 0) {
+                TaskProcessor *taskProcessor = new TaskProcessor();
+                taskProcessor->startDelayTask(static_cast<std::chrono::milliseconds>(delayTime), [this]() {
+                    this->trYTop = this->headerHeight * 2;
+                    this->onActionEnd();
+                });
+            } else {
+                this->trYTop = this->headerHeight * 2;
+                this->onActionEnd();
+            }
+        }
+    };
 
     void SmartRefreshLayoutComponentInstance::finalizeUpdates() {
         setHeaderChildSize();
@@ -74,7 +94,7 @@ namespace rnoh {
     void SmartRefreshLayoutComponentInstance::panGesture(ArkUI_NodeHandle arkUI_NodeHandle) {
         auto anyGestureApi = OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_GESTURE, "ArkUI_NativeGestureAPI_1");
         auto gestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(anyGestureApi);
-        auto panGesture = gestureApi->createPanGesture(1, GESTURE_DIRECTION_VERTICAL, 5);
+        auto panGesture = gestureApi->createPanGesture(1, GESTURE_DIRECTION_VERTICAL, 0.1);
         auto onPanActionCallBack = [](ArkUI_GestureEvent *event, void *extraParam) {
             SmartRefreshLayoutComponentInstance *instance = (SmartRefreshLayoutComponentInstance *)extraParam;
             if (!instance->m_pullToRefreshNode.getPullToRefreshConfigurator().getHasRefresh()) {
@@ -90,8 +110,6 @@ namespace rnoh {
                 instance->offsetY = OH_ArkUI_PanGesture_GetOffsetY(event) - instance->downY;
                 if (instance->offsetY >= 0) {
                     instance->onActionUpdate();
-                } else {
-                    instance->onActionEnd();
                 }
             } else if (actionType == GESTURE_EVENT_ACTION_END) {
                 instance->onActionEnd();
@@ -129,8 +147,7 @@ namespace rnoh {
                         // 可释放刷新时触发
                         this->onReleaseToRefresh();
                     }
-                    if (trY > 0) {
-                        this->onHeaderPulling(trYTop);
+                    if (trYTop >= 0) {
                         this->changeStatus();
                     }
                 }
@@ -210,7 +227,6 @@ namespace rnoh {
                                               m_pullToRefreshNode.markDirty();
                                               this->changeStatus();
                                           }
-                                          onHeaderReleasing(trYTop);
                                       });
         if (animation->GetAnimationStatus() == ANIMATION_FREE || animation->GetAnimationStatus() == ANIMATION_FINISH) {
             animation->Start();
@@ -276,7 +292,13 @@ namespace rnoh {
         } else {
             m_pullToRefreshNode.setHeaderHeight(h);
         }
-        onHeaderMoving(h);
+        // 下拉中
+        if (oldHeaderTop < h) {
+            onHeaderPulling(h);
+        } else if (oldHeaderTop > h) {
+            onHeaderReleasing(h);
+        }
+        oldHeaderTop = h;
     }
 
     void SmartRefreshLayoutComponentInstance::onHeaderPulling(const float &displayedHeaderHeight) {
