@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "RNCSmartRefreshTurbomodule.h"
+#include "RNCSmartRefreshTurboModule.h"
 
 using namespace rnoh;
 using namespace facebook;
