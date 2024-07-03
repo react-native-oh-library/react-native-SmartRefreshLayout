@@ -39,8 +39,7 @@
   },
   "homepage": "https://github.com/react-native-studio/react-native-SmartRefreshLayout#readme",
   "dependencies": {
-    "prop-types": "*",
-    "react-native-smartrefreshlayout": "0.6.7"
+    "prop-types": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.20",
