@@ -1,5 +1,6 @@
 #include "RNCAnyHeaderComponentInstance.h"
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "SmartUtils.h"
 
 namespace rnoh {
 
@@ -38,10 +39,22 @@ namespace rnoh {
         if (rnInstancePtr != nullptr) {
             auto turboModule = rnInstancePtr->getTurboModule("RNCSmartRefreshContext");
             auto arkTsTurboModule = std::dynamic_pointer_cast<rnoh::ArkTSTurboModule>(turboModule);
-            folly::dynamic result = arkTsTurboModule->callSync("cvp2px", {getLayoutMetrics().frame.size.width});;
+            folly::dynamic result = arkTsTurboModule->callSync("cvp2px", {getLayoutMetrics().frame.size.width});
             folly::dynamic result1 = arkTsTurboModule->callSync("cvp2px", {childHeight});
             m_stackNode.setLayoutRect({0, 0}, {result["values"].asDouble(), result1["values"].asDouble()}, 1.0);
         }
+    }
+
+    void RNCAnyHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
+        CppComponentInstance::onPropsChanged(props);
+        if (props == nullptr) {
+            return;
+        }
+        backColor = props->primaryColor;
+    }
+
+    facebook::react::SharedColor RNCAnyHeaderComponentInstance::GetPrimaryColor() {
+        return SmartUtils::parseColor(backColor);
     }
 
 } // namespace rnoh

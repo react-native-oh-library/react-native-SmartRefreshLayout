@@ -16,5 +16,6 @@ namespace rnoh {
         virtual void onRefreshStatusChange(int32_t status){};
         virtual void addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node){};
         virtual void onHeaderMove(float dur){};
+        virtual facebook::react::SharedColor GetPrimaryColor(){};
     };
 } // namespace rnoh
