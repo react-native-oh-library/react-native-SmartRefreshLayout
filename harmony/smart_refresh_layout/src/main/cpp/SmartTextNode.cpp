@@ -27,10 +27,11 @@ SmartTextNode &SmartTextNode::setTextContent(const std::string &text) {
     return *this;
 }
 
-SmartTextNode &SmartTextNode::setFontColor(uint32_t color) {
-    ArkUI_NumberValue value[] = {{.u32 = color}};
-    ArkUI_AttributeItem item = {.value = value, .size = 1};
-    maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_FONT_COLOR, &item));
+SmartTextNode &SmartTextNode::setFontColor(facebook::react::SharedColor const &color) {
+    uint32_t colorValue = *color;
+    ArkUI_NumberValue preparedColorValue[] = {{.u32 = colorValue}};
+    ArkUI_AttributeItem colorItem = {preparedColorValue, sizeof(preparedColorValue) / sizeof(ArkUI_NumberValue)};
+    maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_FONT_COLOR, &colorItem));
     return *this;
 }
 

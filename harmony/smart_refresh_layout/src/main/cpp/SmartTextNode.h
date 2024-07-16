@@ -36,7 +36,7 @@ class SmartTextNode : public ArkUINode {
   void removeChild(ArkUINode& child);
 
   SmartTextNode& setTextContent(const std::string& text);
-  SmartTextNode& setFontColor(uint32_t fontColor);
+  SmartTextNode& setFontColor(facebook::react::SharedColor const& color);
   SmartTextNode& setFontSize(float fontSize);
 };
 } // namespace rnoh
