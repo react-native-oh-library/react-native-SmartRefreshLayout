@@ -38,5 +38,6 @@ namespace rnoh {
         std::string getDefaultHeaderBackGroundColor() { return primaryColor; }
         void setImageRotate(float angle);
         void setRotateAnimate(float angle, int32_t dur, int32_t count);
+        facebook::react::SharedColor GetPrimaryColor() override;
     };
 } // namespace rnoh

@@ -8,6 +8,7 @@
 #include "RNOH/arkui/NativeNodeApi.h"
 #include "react/renderer/imagemanager/primitives.h"
 #include "SmartRefreshState.h"
+#include "SmartUtils.h"
 
 namespace rnoh {
 
@@ -79,6 +80,19 @@ namespace rnoh {
     SmartStackNode &RNCClassicsHeaderComponentInstance::getLocalRootArkUINode() { return m_stackNode; }
 
     void RNCClassicsHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
+        if (props != nullptr) {
+            primaryColor = props->primaryColor;
+            if (props->accentColor != "") {
+                textNode.setFontColor(SmartUtils::parseColor(props->accentColor));
+                timeTextNode.setFontColor(SmartUtils::parseColor(props->accentColor));
+                imageNode.setTintColor(SmartUtils::parseColor(props->accentColor));
+                updateImageNode.setTintColor(SmartUtils::parseColor(props->accentColor));
+            }
+        }
+    }
+
+    facebook::react::SharedColor RNCClassicsHeaderComponentInstance::GetPrimaryColor() {
+        return SmartUtils::parseColor(primaryColor);
     }
 
     void RNCClassicsHeaderComponentInstance::finalizeUpdates() {
