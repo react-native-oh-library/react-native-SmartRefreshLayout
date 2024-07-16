@@ -24,6 +24,7 @@ namespace rnoh {
         SmartProgressNode progressNode;
         ArkUI_NodeHandle mColumnHandle;
         std::string primaryColor{""};
+        std::string accentColor{""};
 
     public:
         RNCDefaultHeaderComponentInstance(Context context);
@@ -34,7 +35,7 @@ namespace rnoh {
         void finalizeUpdates() override;
         SmartStackNode &getLocalRootArkUINode() override;
         void onRefreshStatusChange(int32_t status) override;
-        std::string getDefaultHeaderBackGroundColor() { return primaryColor; }
         void setImageRotate(float angle);
+        facebook::react::SharedColor GetPrimaryColor() override;
     };
 } // namespace rnoh

@@ -8,6 +8,7 @@
 #include "RNOH/arkui/NativeNodeApi.h"
 #include "react/renderer/imagemanager/primitives.h"
 #include "SmartRefreshState.h"
+#include "SmartUtils.h"
 
 namespace rnoh {
 
@@ -57,18 +58,26 @@ namespace rnoh {
 
     void RNCDefaultHeaderComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         if (props != nullptr) {
-            facebook::react::SharedColor headerColor = props->primaryColor;
-            if (props->accentColor) {
-                textNode.setFontColor(props->accentColor);
-                imageNode.setTintColor(props->accentColor);
+            primaryColor = props->primaryColor;
+            if (props->accentColor != "") {
+                textNode.setFontColor(SmartUtils::parseColor(props->accentColor));
+                imageNode.setTintColor(SmartUtils::parseColor(props->accentColor));
+                progressNode.setLoadingProgressNodeColor(SmartUtils::parseColor(props->accentColor));
             }
         }
     }
-
+    facebook::react::SharedColor RNCDefaultHeaderComponentInstance::GetPrimaryColor() {
+        return SmartUtils::parseColor(primaryColor);
+    }
     void RNCDefaultHeaderComponentInstance::finalizeUpdates() {
-        ArkUI_NumberValue heightNumberValue[] = {60};
-        ArkUI_AttributeItem heightItem = {heightNumberValue, 1};
-        NativeNodeApi::getInstance()->setAttribute(m_stackNode.getArkUINodeHandle(), NODE_HEIGHT, &heightItem);
+        auto rnInstancePtr = this->m_deps->rnInstance.lock();
+        if (rnInstancePtr != nullptr) {
+            auto turboModule = rnInstancePtr->getTurboModule("RNCSmartRefreshContext");
+            auto arkTsTurboModule = std::dynamic_pointer_cast<rnoh::ArkTSTurboModule>(turboModule);
+            folly::dynamic result = arkTsTurboModule->callSync("cvp2px", {getLayoutMetrics().frame.size.width});
+            folly::dynamic result1 = arkTsTurboModule->callSync("cvp2px", {60});
+            m_stackNode.setLayoutRect({0, 0}, {result["values"].asDouble(), result1["values"].asDouble()}, 1.0);
+        }
         m_stackNode.setAlignment(ARKUI_ALIGNMENT_BOTTOM);
     }
 
