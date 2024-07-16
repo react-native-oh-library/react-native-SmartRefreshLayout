@@ -17,7 +17,7 @@ namespace rnoh {
 
     private:
         SmartStackNode m_stackNode;
-        ArkUI_NodeHandle imageStack{m_stackNode.getArkUINodeHandle()};
+        SmartStackNode imageStack;
         SmartProgressNode progressNode;
         float mWindowWidth{0.0};
         bool isRefreshed{false};
@@ -32,5 +32,7 @@ namespace rnoh {
         void addHeader(int32_t screenWidth, int32_t index, ArkUINode *arkUI_Node) override;
         void onHeaderMove(float dur) override;
         void setScaleAnimate(int32_t dur);
+        facebook::react::SharedColor GetPrimaryColor() override;
+        void finalizeUpdates() override;
     };
 } // namespace rnoh

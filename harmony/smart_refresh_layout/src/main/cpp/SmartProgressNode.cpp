@@ -20,14 +20,15 @@ void SmartProgressNode::setLoadingProgressNodeColor(facebook::react::SharedColor
 }
 
 void SmartProgressNode::setLoadingProgressNodeAnimating(const bool &enable) {
-    uint32_t typeValue = 1;
-    if (!enable) {
-        typeValue = 0;
-    }
-    ArkUI_NumberValue preparedTypeValue[] = {{.u32 = typeValue}};
-    ArkUI_AttributeItem typeItem = {preparedTypeValue, sizeof(preparedTypeValue) / sizeof(ArkUI_NumberValue)};
-    maybeThrow(
-        NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_LOADING_PROGRESS_ENABLE_LOADING, &typeItem));
+    uint32_t enableLoadingProgressNodeAnimation = enable ? 1 : 0;
+    std::array<ArkUI_NumberValue, 1> enableLoadingProgressNodeAnimationValue = {
+        {{.u32 = enableLoadingProgressNodeAnimation}}};
+
+    ArkUI_AttributeItem enableLoadingProgressNodeAnimationItem = {enableLoadingProgressNodeAnimationValue.data(),
+                                                                  enableLoadingProgressNodeAnimationValue.size()};
+
+    maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_LOADING_PROGRESS_ENABLE_LOADING,
+                                                          &enableLoadingProgressNodeAnimationItem));
 }
 
 } // namespace rnoh
