@@ -263,6 +263,7 @@ namespace rnoh {
             }
         }
     }
+
     void SmartRefreshLayoutComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         CppComponentInstance::onPropsChanged(props);
         if (props == nullptr) {
@@ -276,10 +277,15 @@ namespace rnoh {
         overScrollBounce = props->overScrollBounce;
         overScrollDrag = props->overScrollDrag;
         pureScroll = props->pureScroll;
-        facebook::react::SharedColor headerColor = props->primaryColor;
+        mHeaderBackgroundColor = props->primaryColor;
+        if (delegate != nullptr && (*(delegate->GetPrimaryColor())) != -1) {
+            mHeaderBackgroundColor = delegate->GetPrimaryColor();
+        }
+
+        m_pullToRefreshNode.setHeaderBackgroundColor(mHeaderBackgroundColor);
         m_pullToRefreshNode.setEnableRefresh(props->enableRefresh);
-        m_pullToRefreshNode.setMaxTranslate(props->headerHeight * 2);
-        m_pullToRefreshNode.setHeaderBackgroundColor(headerColor);
+        m_pullToRefreshNode.setMaxTranslate(props->headerHeight * (maxDragRate != 2 ? maxDragRate : 2));
+        m_pullToRefreshNode.setSensitivity(dragRate != 0.5 ? dragRate : 0.5);
     }
 
 
@@ -324,18 +330,23 @@ namespace rnoh {
             std::vector<ComponentInstance::Shared> child = getChildren();
             for (ComponentInstance::Shared c : child) {
                 if (c->getComponentName() == "RNCDefaultHeader" || c->getComponentName() == "RNCClassicsHeader" ||
-                    c->getComponentName() == "RNCMaterialHeader") {
+                    c->getComponentName() == "RNCMaterialHeader" || c->getComponentName() == "RNCAnyHeader") {
                     delegate = std::dynamic_pointer_cast<rnoh::HeaderNodeDelegate>(c);
                     if (delegate != nullptr && c->getComponentName() == "RNCMaterialHeader") {
                         ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
                         ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
-                        NativeNodeApi::getInstance()->setAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
+                        NativeNodeApi::getInstance()->setAttribute(m_pullToRefreshNode.getArkUINodeHandle(), NODE_CLIP,
+                                                                   &clipItem);
                         delegate->addHeader(mWidth, 3, &m_pullToRefreshNode);
+                    }
+                    if (delegate != nullptr && (*(delegate->GetPrimaryColor())) != -1) {
+                        mHeaderBackgroundColor = delegate->GetPrimaryColor();
                     }
                     break;
                 }
             }
         }
+        m_pullToRefreshNode.setHeaderBackgroundColor(mHeaderBackgroundColor);
     };
     void SmartRefreshLayoutComponentInstance::onHeaderReleasing(const float &displayedHeaderHeight) {
         facebook::react::Float percent = displayedHeaderHeight / headerHeight;

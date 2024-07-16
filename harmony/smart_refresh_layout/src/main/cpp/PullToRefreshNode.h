@@ -43,6 +43,7 @@ namespace rnoh {
         void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
         PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
         void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
+        void setSensitivity(float setSensitivity);
     };
 
 } // namespace rnoh

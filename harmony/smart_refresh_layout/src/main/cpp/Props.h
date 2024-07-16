@@ -22,6 +22,7 @@
 #include <react/renderer/core/PropsParserContext.h>
 #include <react/renderer/core/propsConversions.h>
 #include <react/renderer/graphics/Color.h>
+#include <string>
 
 namespace facebook {
 namespace react {
@@ -33,7 +34,7 @@ class JSI_EXPORT RNCAnyHeaderProps final : public ViewProps {
 
 #pragma mark - Props
 
-  std::string primaryColor{};
+  std::string primaryColor{""};
 };
 
 class JSI_EXPORT RNCClassicsHeaderProps final : public ViewProps {
@@ -54,8 +55,8 @@ class JSI_EXPORT RNCDefaultHeaderProps final : public ViewProps {
 
 #pragma mark - Props
 
-  SharedColor primaryColor{};
-  SharedColor accentColor{};
+  std::string primaryColor{};
+  std::string accentColor{};
 };
 
 class JSI_EXPORT RNCMaterialHeaderProps final : public ViewProps {
@@ -114,11 +115,11 @@ class JSI_EXPORT RNCStoreHouseHeaderProps final : public ViewProps {
 
 #pragma mark - Props
 
-  std::string textColor{};
-  std::string text{};
+  std::string textColor{"#cccccc"};
+  std::string text{"StoreHouse"};
   int fontSize{25};
-  Float lineWidth{0.0};
-  Float dropHeight{0.0};
+  Float lineWidth{1};
+  Float dropHeight{40};
 };
 
 } // namespace react

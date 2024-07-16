@@ -49,6 +49,7 @@ namespace rnoh {
 
     void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator.setHasRefresh(enable); }
     void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator.setMaxTranslate(maxHeight); }
+    void PullToRefreshNode::setSensitivity(float setSensitivity) { refreshConfigurator.setSensitivity(setSensitivity); }
     void PullToRefreshNode::setHeaderBackgroundColor(facebook::react::SharedColor const &color) {
         uint32_t colorValue1 = *color;
         ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};

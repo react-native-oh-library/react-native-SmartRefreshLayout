@@ -29,7 +29,7 @@ namespace rnoh {
         bool pureScroll{false};
         facebook::react::Float dragRate{0.5};
         facebook::react::Float maxDragRate{2.0};
-        facebook::react::SharedColor primaryColor{};
+        facebook::react::SharedColor mHeaderBackgroundColor{};
         facebook::react::SmartRefreshLayoutAutoRefreshStruct autoRefresh{};
         bool isHeaderInserted{false}; // whether list child component inserted
         float trYTop{0.0};
