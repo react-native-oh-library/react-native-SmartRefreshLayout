@@ -6,6 +6,7 @@ import type {
   Float,
   Int32,
 } from "react-native/Libraries/Types/CodegenTypes";
+import type { HostComponent } from "react-native";
 
 interface NativeProps extends ViewProps {
   textColor?: string;
@@ -15,4 +16,6 @@ interface NativeProps extends ViewProps {
   dropHeight?: Float;
 }
 
-export default codegenNativeComponent<NativeProps>("RNCStoreHouseHeader");
+export default codegenNativeComponent<NativeProps>(
+  "RNCStoreHouseHeader",
+) as HostComponent<NativeProps>;
