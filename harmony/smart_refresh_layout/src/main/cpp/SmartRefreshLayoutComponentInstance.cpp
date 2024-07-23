@@ -37,8 +37,18 @@ namespace rnoh {
             if (delayTime > 0) {
                 TaskProcessor *taskProcessor = new TaskProcessor();
                 taskProcessor->startDelayTask(static_cast<std::chrono::milliseconds>(delayTime), [this]() {
-                    this->trYTop = this->headerHeight * 2;
-                    this->onActionEnd();
+                    auto instance = std::static_pointer_cast<RNInstanceInternal>(m_deps->rnInstance.lock());
+                    if (!instance) {
+                        return;
+                    }
+                    instance->getTaskExecutor()->runTask(
+                        TaskThread::MAIN, [wptr = this->weak_from_this(), wInstance = instance->weak_from_this()] {
+                            auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr.lock());
+                            if (ptr) {
+                                ptr->trYTop = ptr->headerHeight * 2;
+                                ptr->onActionEnd();
+                            }
+                        });
                 });
             } else {
                 this->trYTop = this->headerHeight * 2;
@@ -218,16 +228,26 @@ namespace rnoh {
         if (animation == nullptr) {
             animation = new Animation();
         }
-        animation->SetAnimationParams(static_cast<std::chrono::milliseconds>(duration), start, target,
-                                      [this, &target](double value) {
-                                          trYTop = value < 0 ? 0 : value;
-                                          setPullHeaderHeight(trYTop);
-                                          if (trYTop == 0) {
-                                              state = IS_FREE;
-                                              m_pullToRefreshNode.markDirty();
-                                              this->changeStatus();
-                                          }
-                                      });
+        animation->SetAnimationParams(
+            static_cast<std::chrono::milliseconds>(duration), start, target, [this, &target](double value) {
+                trYTop = value < 0 ? 0 : value;
+                auto instance = std::static_pointer_cast<RNInstanceInternal>(m_deps->rnInstance.lock());
+                if (!instance) {
+                    return;
+                }
+                instance->getTaskExecutor()->runTask(
+                    TaskThread::MAIN, [wptr = this->weak_from_this(), wInstance = instance->weak_from_this()] {
+                        auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr.lock());
+                        if (ptr) {
+                            ptr->setPullHeaderHeight(ptr->trYTop);
+                            if (ptr->trYTop == 0) {
+                                ptr->state = IS_FREE;
+                                ptr->m_pullToRefreshNode.markDirty();
+                                ptr->changeStatus();
+                            }
+                        }
+                    });
+            });
         if (animation->GetAnimationStatus() == ANIMATION_FREE || animation->GetAnimationStatus() == ANIMATION_FINISH) {
             animation->Start();
         }
