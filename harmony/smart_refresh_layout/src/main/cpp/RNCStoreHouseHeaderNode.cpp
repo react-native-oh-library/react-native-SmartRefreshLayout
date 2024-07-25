@@ -53,10 +53,11 @@ RNCStoreHouseHeaderNode::~RNCStoreHouseHeaderNode() {
     NativeNodeApi::getInstance()->unregisterNodeCustomEvent(m_nodeHandle, ARKUI_NODE_CUSTOM_EVENT_ON_MEASURE);
     NativeNodeApi::getInstance()->unregisterNodeCustomEvent(m_nodeHandle, ARKUI_NODE_CUSTOM_EVENT_ON_DRAW);
     OH_Drawing_MatrixDestroy(mMatrix);
-    OH_Drawing_CanvasDestroy(canvas);
     mItemList.clear();
     delete canvasCallback_;
     canvasCallback_ = nullptr;
+    canvas = nullptr;
+    mMatrix = nullptr;
 }
 void RNCStoreHouseHeaderNode::setStoreHouseNodeDelegate(StoreHouseNodeDelegate *storeHouseNodeDelegate) {
     delegate = storeHouseNodeDelegate;
