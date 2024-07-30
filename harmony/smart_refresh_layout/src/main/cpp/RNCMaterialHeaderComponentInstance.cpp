@@ -73,19 +73,33 @@ namespace rnoh {
         ArkUI_AttributeItem positionValue[] = {positionArray, 2};
         NativeNodeApi::getInstance()->setAttribute(imageStack.getArkUINodeHandle(), NODE_POSITION, positionValue);
     }
+
     void RNCMaterialHeaderComponentInstance::setScaleAnimate(int32_t dur) {
 
         TaskCommonThread *task = new TaskCommonThread();
         task->setTaskParams(static_cast<std::chrono::milliseconds>(dur), [this](double v) {
-            float value = 1.0 - static_cast<float>(v);
-            ArkUI_NumberValue scaleArray[] = {{.f32 = value}, {.f32 = value}};
-            ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
-            NativeNodeApi::getInstance()->setAttribute(imageStack.getArkUINodeHandle(), NODE_SCALE, scaleValue);
-            if (std::abs(value - 0.01) < 1e-6) {
-                ArkUI_NumberValue scaleArray[] = {{.f32 = 1.0}, {.f32 = 1.0}};
-                ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
-                NativeNodeApi::getInstance()->setAttribute(imageStack.getArkUINodeHandle(), NODE_SCALE, scaleValue);
+            scaleSize = 1.0 - static_cast<float>(v);
+            auto instance = std::static_pointer_cast<RNInstanceInternal>(m_deps->rnInstance.lock());
+            if (!instance) {
+                return;
             }
+            instance->getTaskExecutor()->runTask(
+                TaskThread::MAIN, [wptr = this->weak_from_this(), wInstance = instance->weak_from_this()] {
+                    auto ptr = std::static_pointer_cast<RNCMaterialHeaderComponentInstance>(wptr.lock());
+                    if (ptr) {
+                        float value = ptr->scaleSize;
+                        ArkUI_NumberValue scaleArray[] = {{.f32 = value}, {.f32 = value}};
+                        ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
+                        NativeNodeApi::getInstance()->setAttribute(ptr->imageStack.getArkUINodeHandle(), NODE_SCALE,
+                                                                   scaleValue);
+                        if (std::abs(value - 0.01) < 1e-6) {
+                            ArkUI_NumberValue scaleArray[] = {{.f32 = 1.0}, {.f32 = 1.0}};
+                            ArkUI_AttributeItem scaleValue[] = {scaleArray, 2};
+                            NativeNodeApi::getInstance()->setAttribute(ptr->imageStack.getArkUINodeHandle(), NODE_SCALE,
+                                                                       scaleValue);
+                        }
+                    }
+                });
         });
         task->execute();
     }

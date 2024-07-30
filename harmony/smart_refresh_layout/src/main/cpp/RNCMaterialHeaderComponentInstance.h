@@ -21,6 +21,7 @@ namespace rnoh {
         SmartProgressNode progressNode;
         float mWindowWidth{0.0};
         bool isRefreshed{false};
+        float scaleSize{1.0};
 
     public:
         RNCMaterialHeaderComponentInstance(Context context);
