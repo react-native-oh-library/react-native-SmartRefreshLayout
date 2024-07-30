@@ -27,6 +27,9 @@ public:
 
     ~Animation() { cancelAnimation(); }
 
+    Animation(const Animation &) = delete;
+    Animation &operator=(Animation const &) = delete;
+
     void SetAnimationParams(std::chrono::milliseconds durationSeconds, double startValue, double endValue,
                             std::function<void(double)> callback) {
         duration_ = durationSeconds; // 150

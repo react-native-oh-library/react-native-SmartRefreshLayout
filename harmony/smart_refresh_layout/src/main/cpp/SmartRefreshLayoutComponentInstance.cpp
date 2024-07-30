@@ -244,6 +244,10 @@ namespace rnoh {
                                 ptr->state = IS_FREE;
                                 ptr->m_pullToRefreshNode.markDirty();
                                 ptr->changeStatus();
+                                if (ptr->animation && ptr->animation->GetAnimationStatus() != ANIMATION_FREE) {
+                                    delete (ptr->animation);
+                                    ptr->animation = nullptr;
+                                }
                             }
                         }
                     });
