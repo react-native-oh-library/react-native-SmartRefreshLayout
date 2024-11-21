@@ -136,8 +136,6 @@ namespace rnoh {
         if (state == IS_FREE || state == IS_PULL_DOWN_1 || state == IS_PULL_DOWN_2 || state == IS_PULL_UP_1 ||
             state == IS_PULL_UP_2) {
             auto maxTranslate = m_pullToRefreshNode.getPullToRefreshConfigurator().getMaxTranslate();
-            auto loadImgHeight = m_pullToRefreshNode.getPullToRefreshConfigurator().getLoadImgHeight();
-            auto refreshHeight = m_pullToRefreshNode.getPullToRefreshConfigurator().getRefreshHeight();
             touchYNew = offsetY;
             if (!isComponentTop()) {
                 return;
@@ -168,7 +166,6 @@ namespace rnoh {
 
     void SmartRefreshLayoutComponentInstance::onActionEnd() {
         auto maxTranslate = m_pullToRefreshNode.getPullToRefreshConfigurator().getMaxTranslate();
-        auto refreshAnimDuration = m_pullToRefreshNode.getPullToRefreshConfigurator().getRefreshAnimDuration();
         if (trYTop > 0) {
             if (state == IS_FREE || state == IS_PULL_DOWN_1 || state == IS_PULL_DOWN_2) {
                 if (trYTop / maxTranslate < 0.5) {
@@ -226,7 +223,7 @@ namespace rnoh {
             return;
         }
         if (animation == nullptr) {
-            animation = new Animation();
+            animation = std::make_shared<Animation>();
         }
         animation->SetAnimationParams(
             static_cast<std::chrono::milliseconds>(duration), start, target, [this, &target](double value) {
@@ -245,7 +242,6 @@ namespace rnoh {
                                 ptr->m_pullToRefreshNode.markDirty();
                                 ptr->changeStatus();
                                 if (ptr->animation && ptr->animation->GetAnimationStatus() != ANIMATION_FREE) {
-                                    delete (ptr->animation);
                                     ptr->animation = nullptr;
                                 }
                             }

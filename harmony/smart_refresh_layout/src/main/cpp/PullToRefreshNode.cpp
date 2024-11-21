@@ -6,8 +6,8 @@
 namespace rnoh {
     PullToRefreshNode::PullToRefreshNode()
         : ArkUINode(NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_COLUMN)),
-          m_headerArkUINodeHandle(nullptr), m_listArkUINodeHandle(nullptr), m_pullToRefreshNodeDelegate(nullptr) {
-    }
+          m_headerArkUINodeHandle(nullptr), m_listArkUINodeHandle(nullptr), m_pullToRefreshNodeDelegate(nullptr),
+          refreshConfigurator{std::make_shared<PullToRefreshConfigurator>()}{}
 
     PullToRefreshNode::~PullToRefreshNode() {}
     void PullToRefreshNode::setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate) {
@@ -47,9 +47,9 @@ namespace rnoh {
         NativeNodeApi::getInstance()->setAttribute(m_headerArkUINodeHandle, NODE_HEIGHT, &heightItem);
     }
 
-    void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator.setHasRefresh(enable); }
-    void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator.setMaxTranslate(maxHeight); }
-    void PullToRefreshNode::setSensitivity(float setSensitivity) { refreshConfigurator.setSensitivity(setSensitivity); }
+    void PullToRefreshNode::setEnableRefresh(bool enable) { refreshConfigurator->setHasRefresh(enable); }
+    void PullToRefreshNode::setMaxTranslate(float maxHeight) { refreshConfigurator->setMaxTranslate(maxHeight); }
+    void PullToRefreshNode::setSensitivity(float setSensitivity) { refreshConfigurator->setSensitivity(setSensitivity); }
     void PullToRefreshNode::setHeaderBackgroundColor(facebook::react::SharedColor const &color) {
         uint32_t colorValue1 = *color;
         ArkUI_NumberValue preparedColorValue1[] = {{.u32 = colorValue1}};

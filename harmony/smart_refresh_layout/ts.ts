@@ -22,5 +22,4 @@
  * SOFTWARE.
  */
 
-export * from "./src/main/ets/SmartRefreshTurboModule"
 export * from "./src/main/ets/SmartRefreshPackage"
