@@ -40,7 +40,7 @@ namespace rnoh {
         float oldHeaderTop{0.0};
         int32_t downY{0};   // first down touch on Y
         int32_t offsetY{0}; // pan offset on Y
-        Animation *animation{nullptr};
+        std::shared_ptr<Animation> animation{nullptr};
         void setOtherHeaderDelegate();
 
     public:

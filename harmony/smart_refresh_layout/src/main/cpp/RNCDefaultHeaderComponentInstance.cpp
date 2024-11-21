@@ -70,14 +70,11 @@ namespace rnoh {
         return SmartUtils::parseColor(primaryColor);
     }
     void RNCDefaultHeaderComponentInstance::finalizeUpdates() {
-        auto rnInstancePtr = this->m_deps->rnInstance.lock();
-        if (rnInstancePtr != nullptr) {
-            auto turboModule = rnInstancePtr->getTurboModule("RNCSmartRefreshContext");
-            auto arkTsTurboModule = std::dynamic_pointer_cast<rnoh::ArkTSTurboModule>(turboModule);
-            folly::dynamic result = arkTsTurboModule->callSync("cvp2px", {getLayoutMetrics().frame.size.width});
-            folly::dynamic result1 = arkTsTurboModule->callSync("cvp2px", {60});
-            m_stackNode.setLayoutRect({0, 0}, {result["values"].asDouble(), result1["values"].asDouble()}, 1.0);
-        }
+        m_stackNode.setLayoutRect(
+            {0, 0},
+            {SmartUtils::vp2px(getLayoutMetrics().pointScaleFactor, getLayoutMetrics().frame.size.width),
+            SmartUtils::vp2px(getLayoutMetrics().pointScaleFactor, 60)},
+            1.0);
         m_stackNode.setAlignment(ARKUI_ALIGNMENT_BOTTOM);
     }
 

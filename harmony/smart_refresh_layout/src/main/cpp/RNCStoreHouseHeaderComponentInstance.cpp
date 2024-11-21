@@ -6,6 +6,7 @@
 
 #include "RNCStoreHouseHeaderComponentInstance.h"
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "SmartUtils.h"
 
 namespace rnoh {
 
@@ -24,14 +25,7 @@ void RNCStoreHouseHeaderComponentInstance::onChildRemoved(ComponentInstance::Sha
 };
 
 float RNCStoreHouseHeaderComponentInstance::getVp2Px(float v) {
-    auto rnInstancePtr = this->m_deps->rnInstance.lock();
-    if (rnInstancePtr != nullptr) {
-        auto turboModule = rnInstancePtr->getTurboModule("RNCSmartRefreshContext");
-        auto arkTsTurboModule = std::dynamic_pointer_cast<rnoh::ArkTSTurboModule>(turboModule);
-        folly::dynamic result = arkTsTurboModule->callSync("cvp2px", {v});
-        return result["values"].asDouble();
-    }
-    return -1;
+    return SmartUtils::vp2px(getLayoutMetrics().pointScaleFactor, v);;
 }
 facebook::react::SharedColor RNCStoreHouseHeaderComponentInstance::GetPrimaryColor() { return -1; };
 void RNCStoreHouseHeaderComponentInstance::onHeaderMove(float dur) { m_storeHouseNode.setProgress(dur); };

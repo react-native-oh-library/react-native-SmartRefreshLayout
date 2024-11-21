@@ -24,13 +24,9 @@
 
 import { RNPackage, TurboModulesFactory } from '@rnoh/react-native-openharmony/ts';
 import type { TurboModule, TurboModuleContext } from '@rnoh/react-native-openharmony/ts';
-import { SmartRefreshTurboModule } from './SmartRefreshTurboModule';
 
 class SmartRefreshTurboModulesFactory extends TurboModulesFactory {
   createTurboModule(name: string): TurboModule | null {
-    if (name === 'RNCSmartRefreshContext') {
-      return new SmartRefreshTurboModule(this.ctx);
-    }
     return null;
   }
 

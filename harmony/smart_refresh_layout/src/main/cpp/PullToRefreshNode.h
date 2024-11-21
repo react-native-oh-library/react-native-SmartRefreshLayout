@@ -25,7 +25,7 @@ namespace rnoh {
         ArkUI_NodeHandle m_headerArkUINodeHandle;
         ArkUI_NodeHandle m_listArkUINodeHandle;
         PullToRefreshNodeDelegate *m_pullToRefreshNodeDelegate;
-        PullToRefreshConfigurator refreshConfigurator{PullToRefreshConfigurator()};
+        std::shared_ptr<PullToRefreshConfigurator> refreshConfigurator;
 
     public:
         PullToRefreshNode();
@@ -41,7 +41,7 @@ namespace rnoh {
         void setEnableRefresh(bool enable);
         void setMaxTranslate(float maxHeight);
         void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
-        PullToRefreshConfigurator getPullToRefreshConfigurator() { return refreshConfigurator; }
+        PullToRefreshConfigurator getPullToRefreshConfigurator() { return *refreshConfigurator; }
         void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
         void setSensitivity(float setSensitivity);
     };

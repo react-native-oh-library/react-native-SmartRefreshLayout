@@ -30,5 +30,8 @@ public:
         }
         return facebook::react::colorFromComponents({red, green, blue, alpha});
     }
+    
+    // NOTE: ArkUI translation is in `px` units, while React Native uses `vp`
+    static double vp2px(double pointScaleFactor, double value) { return pointScaleFactor * value; }
 };
 #endif // HARMONY_ANIMATION_H
