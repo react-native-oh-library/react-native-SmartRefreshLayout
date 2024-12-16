@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "react-native-SmartRefreshLayout",
+        "License": "Apache License",
+        "License File": "LICENSE",
+        "Version Number": "0.6.7",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/react-native-studio/react-native-SmartRefreshLayout",
+        "Description": "React-Native-SmartRefreshLayout, elastic refresh component."
+    }
+]
