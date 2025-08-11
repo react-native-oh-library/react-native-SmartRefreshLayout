@@ -15,6 +15,7 @@ namespace rnoh {
                                                         std::size_t index) {
         CppComponentInstance::onChildInserted(childComponentInstance, index);
         m_stackNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
+    
     }
 
     void RNCAnyHeaderComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
