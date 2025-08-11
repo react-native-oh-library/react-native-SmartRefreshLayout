@@ -9,7 +9,9 @@ namespace rnoh {
           m_headerArkUINodeHandle(nullptr), m_listArkUINodeHandle(nullptr), m_pullToRefreshNodeDelegate(nullptr),
           refreshConfigurator{std::make_shared<PullToRefreshConfigurator>()}{}
 
-    PullToRefreshNode::~PullToRefreshNode() {}
+    PullToRefreshNode::~PullToRefreshNode() {
+        refreshConfigurator = nullptr;
+    }
     void PullToRefreshNode::setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate) {
         m_pullToRefreshNodeDelegate = pullToRefreshNodeDelegate;
     }

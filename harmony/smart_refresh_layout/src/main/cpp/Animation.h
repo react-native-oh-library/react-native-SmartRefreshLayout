@@ -6,12 +6,12 @@
 
 #ifndef HARMONY_ANIMATION_H
 #define HARMONY_ANIMATION_H
-#include <iostream>
-#include <thread>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <glog/logging.h>
+#include <iostream>
+#include <thread>
 
 typedef enum {
     ANIMATION_FREE = 0,
@@ -60,7 +60,10 @@ public:
             // 逐步增加t的值来模拟动画进度
             double progress = cubicBezier(t, p0, p1, p2, p3); // 计算CubicBezier曲线上的点作为进度
             currentValue_ = startValue_ + (targetValue_ - startValue_) * progress; // 根据进度计算当前值
-            callback_(currentValue_);                                              // 调用回调函数处理当前值
+            if (callback_) {
+                callback_(currentValue_);
+            }
+            // 调用回调函数处理当前值
             // 暂停以匹配动画的持续时间
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime);
@@ -69,7 +72,9 @@ public:
             }
             startTime = currentTime; // 重置开始时间以计算下一帧的延迟
         }
-        callback_(targetValue_);
+        if (callback_) {
+            callback_(targetValue_);
+        }
         state_ = Animation_State::ANIMATION_FINISH;
     }
 
@@ -84,9 +89,7 @@ private:
     std::thread *updateThread_; // 使用指针是为了能够动态分配线程对象
     std::function<void(double)> callback_;
 
-    double cubicBezier(double t, double p0, double p1, double p2, double p3) {
-        return (1 - t) * p0 + p3 * t;
-    }
+    double cubicBezier(double t, double p0, double p1, double p2, double p3) { return (1 - t) * p0 + p3 * t; }
     void cancelAnimation() {
         state_ = Animation_State::ANIMATION_FREE;
         // 等待线程结束

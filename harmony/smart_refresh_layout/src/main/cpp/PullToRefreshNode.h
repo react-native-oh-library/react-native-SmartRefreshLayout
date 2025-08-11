@@ -6,44 +6,51 @@
 
 namespace rnoh {
 
-    class PullToRefreshNodeDelegate {
-    public:
-        virtual ~PullToRefreshNodeDelegate() = default;
-        virtual void onRefresh(){};
-        virtual void onHeaderPulling(const float &displayedHeaderHeight){};
-        virtual void onHeaderReleasing(const float &displayedHeaderHeight){};
-        virtual void onHeaderMoving(const float &displayedHeaderHeight){};
-        virtual void onPullDownToRefresh(){};
-        virtual void onHeaderReleased(){};
-        virtual void onReleaseToRefresh(){};
-        virtual bool isComponentTop(){};
-        virtual void onAppArea(){};
-    };
+class PullToRefreshNodeDelegate {
+public:
+    virtual ~PullToRefreshNodeDelegate() = default;
+    virtual void onRefresh(){};
+    virtual void onHeaderPulling(const float &displayedHeaderHeight){};
+    virtual void onHeaderReleasing(const float &displayedHeaderHeight){};
+    virtual void onHeaderMoving(const float &displayedHeaderHeight){};
+    virtual void onPullDownToRefresh(){};
+    virtual void onHeaderReleased(){};
+    virtual void onReleaseToRefresh(){};
+    virtual bool isComponentTop(){};
+    virtual void onAppArea(){};
+};
 
-    class PullToRefreshNode : public ArkUINode {
-    protected:
-        ArkUI_NodeHandle m_headerArkUINodeHandle;
-        ArkUI_NodeHandle m_listArkUINodeHandle;
-        PullToRefreshNodeDelegate *m_pullToRefreshNodeDelegate;
-        std::shared_ptr<PullToRefreshConfigurator> refreshConfigurator;
+class PullToRefreshNode : public ArkUINode {
+protected:
+    ArkUI_NodeHandle m_headerArkUINodeHandle;
+    ArkUI_NodeHandle m_listArkUINodeHandle;
+    PullToRefreshNodeDelegate *m_pullToRefreshNodeDelegate;
+    std::shared_ptr<PullToRefreshConfigurator> refreshConfigurator;
 
-    public:
-        PullToRefreshNode();
-        ~PullToRefreshNode() override;
+public:
+    PullToRefreshNode();
+    ~PullToRefreshNode() override;
 
-        void insertChild(ArkUINode &child, std::size_t index);
+    void insertChild(ArkUINode &child, std::size_t index);
 
-        void removeChild(ArkUINode &child);
+    void removeChild(ArkUINode &child);
 
-        void setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate);
+    void setPullToRefreshNodeDelegate(PullToRefreshNodeDelegate *pullToRefreshNodeDelegate);
 
-        void setHeaderHeight(float h);
-        void setEnableRefresh(bool enable);
-        void setMaxTranslate(float maxHeight);
-        void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
-        PullToRefreshConfigurator getPullToRefreshConfigurator() { return *refreshConfigurator; }
-        void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
-        void setSensitivity(float setSensitivity);
-    };
+    void setHeaderHeight(float h);
+    void setEnableRefresh(bool enable);
+    void setMaxTranslate(float maxHeight);
+    void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
+
+    PullToRefreshConfigurator *getPullToRefreshConfigurator() {
+        std::weak_ptr<PullToRefreshConfigurator> config = std::move(refreshConfigurator);
+        if (config.lock()) {
+            return config.lock().get();
+        }
+        return std::move(refreshConfigurator).get();
+    }
+    void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
+    void setSensitivity(float setSensitivity);
+};
 
 } // namespace rnoh

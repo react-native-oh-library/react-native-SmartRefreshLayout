@@ -17,27 +17,27 @@
 #ifndef SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
 #define SMART_SRC_MAIN_CPP_SMARTREFRESHLAYOUTPACKAGE_H
 
-#include "RNCClassicsHeaderJSIBinder.h"
-#include "RNCClassicsHeaderNapiBinder.h"
-#include "RNCMaterialHeaderJSIBinder.h"
-#include "RNCMaterialHeaderNapiBinder.h"
-#include "RNOH/Package.h"
 #include "ComponentDescriptors.h"
-#include "SmartRefreshLayoutJSIBinder.h"
-#include "SmartRefreshLayoutNapiBinder.h"
+#include "RNCAnyHeaderComponentInstance.h"
 #include "RNCAnyHeaderJSIBinder.h"
 #include "RNCAnyHeaderNapiBinder.h"
+#include "RNCClassicsHeaderComponentInstance.h"
+#include "RNCClassicsHeaderJSIBinder.h"
+#include "RNCClassicsHeaderNapiBinder.h"
+#include "RNCDefaultHeaderComponentInstance.h"
 #include "RNCDefaultHeaderJSIBinder.h"
 #include "RNCDefaultHeaderNapiBinder.h"
-#include "SmartRefreshLayoutEmitRequestHandler.h"
-#include "RNCAnyHeaderComponentInstance.h"
-#include "SmartRefreshLayoutComponentInstance.h"
-#include "RNCDefaultHeaderComponentInstance.h"
-#include "RNCClassicsHeaderComponentInstance.h"
 #include "RNCMaterialHeaderComponentInstance.h"
+#include "RNCMaterialHeaderJSIBinder.h"
+#include "RNCMaterialHeaderNapiBinder.h"
 #include "RNCStoreHouseHeaderComponentInstance.h"
 #include "RNCStoreHouseHeaderJSIBinder.h"
 #include "RNCStoreHouseHeaderNapiBinder.h"
+#include "RNOH/Package.h"
+#include "SmartRefreshLayoutComponentInstance.h"
+#include "SmartRefreshLayoutEmitRequestHandler.h"
+#include "SmartRefreshLayoutJSIBinder.h"
+#include "SmartRefreshLayoutNapiBinder.h"
 
 namespace rnoh {
 
@@ -75,13 +75,12 @@ public:
     ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
         return std::make_shared<SmartRefreshLayoutPackageComponentInstanceFactoryDelegate>();
     }
-    
+
     std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {
         return {
             facebook::react::concreteComponentDescriptorProvider<
                 facebook::react::SmartRefreshLayoutComponentDescriptor>(),
-            facebook::react::concreteComponentDescriptorProvider<
-                facebook::react::RNCAnyHeaderComponentDescriptor>(),
+            facebook::react::concreteComponentDescriptorProvider<facebook::react::RNCAnyHeaderComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<
                 facebook::react::RNCDefaultHeaderComponentDescriptor>(),
             facebook::react::concreteComponentDescriptorProvider<
