@@ -2,6 +2,7 @@
 #include "RNCDefaultHeaderComponentInstance.h"
 #include "RNOH/arkui/ArkUINode.h"
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "RNOH/RNInstanceInternal.h"
 #include "RNOHCorePackage/ComponentInstances/ScrollViewComponentInstance.h"
 #include "TaskProcessor.h"
 #include "react/renderer/graphics/Color.h"

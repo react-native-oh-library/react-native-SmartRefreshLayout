@@ -6,6 +6,7 @@
 
 #include "RNCMaterialHeaderComponentInstance.h"
 #include "RNOH/arkui/NativeNodeApi.h"
+#include "RNOH/RNInstanceInternal.h"
 #include "TaskCommonThread.h"
 #include "react/renderer/imagemanager/primitives.h"
 #include "SmartRefreshState.h"
