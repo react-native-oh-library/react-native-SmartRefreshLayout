@@ -75,7 +75,7 @@ struct SmartRefreshLayoutAutoRefreshStruct {
 };
 
 static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, SmartRefreshLayoutAutoRefreshStruct &result) {
-  auto map = (butter::map<std::string, RawValue>)value;
+  auto map = (std::unordered_map<std::string, RawValue>)value;
 
   auto tmp_refresh = map.find("refresh");
   if (tmp_refresh != map.end()) {
