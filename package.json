@@ -1,6 +1,6 @@
 {
-  "name": "@react-native-oh-tpl/react-native-smartrefreshlayout",
-  "version": "0.6.7-0.2.17",
+  "name": "@react-native-ohos/react-native-smartrefreshlayout",
+  "version": "0.6.7-0.2.18-rc.0",
   "description": "基于android SmartRefreshLayout的封装",
   "harmony": {
     "alias": "react-native-smartrefreshlayout"

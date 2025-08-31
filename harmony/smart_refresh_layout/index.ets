@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./src/main/ets/SmartRefreshControl"
+//export * from "./src/main/ets/SmartRefreshControl"
 export * from "./src/main/ets/RNCAnyHeader"
 export * from "./src/main/ets/RNCDefaultHeader"
 export * from './ts'

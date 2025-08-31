@@ -1,4 +1,4 @@
-# @react-native-oh-tpl/react-native-smartrefreshlayout
+# @react-native-ohos/react-native-smartrefreshlayout
 This project is based on  [react-native-smartrefreshlayout](https://github.com/react-native-studio/react-native-SmartRefreshLayout)
 ## Documentation
 [中文](https://gitee.com/react-native-oh-library/usage-docs/blob/master/zh-cn/react-native-SmartRefreshLayout.md)
