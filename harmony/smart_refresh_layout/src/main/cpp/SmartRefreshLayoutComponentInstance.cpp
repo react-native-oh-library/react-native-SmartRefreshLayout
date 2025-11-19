@@ -418,6 +418,13 @@ void SmartRefreshLayoutComponentInstance::onPullDownToRefresh() {
     if (m_eventEmitter) {
         m_eventEmitter->onPullDownToRefresh({});
     }
+    if (delegate) { // header设置了背景色 
+        facebook::react::SharedColor headerBack = delegate->GetPrimaryColor();
+        if ((*headerBack) != -1 && headerBack != mHeaderBackgroundColor) {
+            mHeaderBackgroundColor = headerBack;
+            m_pullToRefreshNode.setHeaderBackgroundColor(mHeaderBackgroundColor);
+        }
+    }
 };
 void SmartRefreshLayoutComponentInstance::onReleaseToRefresh() {
     if (m_eventEmitter) {

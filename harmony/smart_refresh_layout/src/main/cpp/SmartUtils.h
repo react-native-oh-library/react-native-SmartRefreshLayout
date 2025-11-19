@@ -8,10 +8,14 @@
 #define HARMONY_ANIMATION_H
 #include <string>
 #include <react/renderer/graphics/Color.h>
+#include <regex>
 
 class SmartUtils {
 public:
     static facebook::react::SharedColor parseColor(std::string backColor) {
+        if (backColor != "" && backColor.find("rgb") != std::string::npos) {
+            return parseRgbOrRgba(backColor);
+        }
         if (backColor != "" && backColor.find("#") != std::string::npos) {
             backColor = backColor.substr(1);
         }
@@ -30,7 +34,27 @@ public:
         }
         return facebook::react::colorFromComponents({red, green, blue, alpha});
     }
-    
+
+    static facebook::react::SharedColor parseRgbOrRgba(const std::string &colorStr) {
+        std::regex colorRegex(R"(rgb(a)?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([01]|0\.\d+|1\.0*)\s*)?\))");
+        std::smatch matchResult;
+        if (!std::regex_match(colorStr, matchResult, colorRegex)) {
+            return -1;
+        }
+        float r = std::stoi(matchResult[2]) / 255.0;
+        float g = std::stoi(matchResult[3]) / 255.0;
+        float b = std::stoi(matchResult[4]) / 255.0;
+        float a = 1.0f;
+        if (matchResult[1].matched) {
+            if (matchResult[5].matched) {
+                a = std::stof(matchResult[5]);
+            } else {
+                return -1;
+            }
+        }
+       return facebook::react::colorFromComponents({r, g, b, a});
+    }
+
     // NOTE: ArkUI translation is in `px` units, while React Native uses `vp`
     static double vp2px(double pointScaleFactor, double value) { return pointScaleFactor * value; }
 };
