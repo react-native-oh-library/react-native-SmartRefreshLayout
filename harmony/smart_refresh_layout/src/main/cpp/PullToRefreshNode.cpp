@@ -16,11 +16,17 @@ namespace rnoh {
         m_pullToRefreshNodeDelegate = pullToRefreshNodeDelegate;
     }
 
-   void PullToRefreshNode::onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) {
+void PullToRefreshNode::onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) {
         if (eventType == ArkUI_NodeEventType::NODE_EVENT_ON_APPEAR) {
-            m_pullToRefreshNodeDelegate->onAppArea();
+            if (m_pullToRefreshNodeDelegate) {
+                m_pullToRefreshNodeDelegate->onAppArea();
+            }
+        } else if (eventType == ArkUI_NodeEventType::NODE_EVENT_ON_DISAPPEAR) {
+            if (m_pullToRefreshNodeDelegate) {
+                m_pullToRefreshNodeDelegate->onDisAppArea();
+            }
         }
-    }
+}
 
     void PullToRefreshNode::insertChild(ArkUINode &child, std::size_t index) {
         if (index == 0) {
