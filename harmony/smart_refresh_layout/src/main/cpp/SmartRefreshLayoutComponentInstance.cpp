@@ -26,12 +26,23 @@ SmartRefreshLayoutComponentInstance::SmartRefreshLayoutComponentInstance(Context
     ArkUI_NumberValue clipValue[] = {{.u32 = 1}};
     ArkUI_AttributeItem clipItem = {clipValue, sizeof(clipValue) / sizeof(ArkUI_NumberValue)};
     NativeNodeApi::getInstance()->setAttribute(m_headerStackNode.getArkUINodeHandle(), NODE_CLIP, &clipItem);
-    panGesture(m_pullToRefreshNode.getArkUINodeHandle());
+
     NativeNodeApi::getInstance()->registerNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_APPEAR,
                                                     NODE_EVENT_ON_APPEAR, this);
+    NativeNodeApi::getInstance()->registerNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_DISAPPEAR,
+                                                    NODE_EVENT_ON_DISAPPEAR, this);
+    
 }
 SmartRefreshLayoutComponentInstance::~SmartRefreshLayoutComponentInstance() {
+    removeGesture();
+    NativeNodeApi::getInstance()->unregisterNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_APPEAR);
+    NativeNodeApi::getInstance()->unregisterNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_DISAPPEAR);
+}
+void SmartRefreshLayoutComponentInstance::onDisAppArea() {
+    removeGesture();
+}
 
+void SmartRefreshLayoutComponentInstance::removeGesture() {
     if (m_panGesture) {
         auto anyGestureApi = OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_GESTURE, "ArkUI_NativeGestureAPI_1");
         auto gestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(anyGestureApi);
@@ -40,9 +51,10 @@ SmartRefreshLayoutComponentInstance::~SmartRefreshLayoutComponentInstance() {
         }
         m_panGesture = nullptr;
     }
-    NativeNodeApi::getInstance()->unregisterNodeEvent(m_pullToRefreshNode.getArkUINodeHandle(), NODE_EVENT_ON_APPEAR);
 }
+
 void SmartRefreshLayoutComponentInstance::onAppArea() {
+    panGesture(m_pullToRefreshNode.getArkUINodeHandle());
     if (this->autoRefresh.refresh) {
         int32_t delayTime = (int32_t)autoRefresh.time;
         if (delayTime > 0) {
@@ -53,8 +65,8 @@ void SmartRefreshLayoutComponentInstance::onAppArea() {
                     return;
                 }
                 instance->getTaskExecutor()->runTask(
-                    TaskThread::MAIN, [wptr = this->weak_from_this(), wInstance = instance->weak_from_this()] {
-                        auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr.lock());
+                    TaskThread::MAIN, [wptr = this->shared_from_this(), wInstance = instance->weak_from_this()] {
+                        auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr);
                         if (ptr) {
                             ptr->trYTop = ptr->headerHeight * 2;
                             ptr->onActionEnd();
@@ -259,8 +271,8 @@ void SmartRefreshLayoutComponentInstance::closeRefresh(float start, float target
                 return;
             }
             instance->getTaskExecutor()->runTask(
-                TaskThread::MAIN, [wptr = this->weak_from_this(), wInstance = instance->weak_from_this()] {
-                    auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr.lock());
+                TaskThread::MAIN, [wptr = this->shared_from_this(), wInstance = instance->weak_from_this()] {
+                    auto ptr = std::static_pointer_cast<SmartRefreshLayoutComponentInstance>(wptr);
                     if (ptr) {
                         ptr->setPullHeaderHeight(ptr->trYTop);
                         if (ptr->trYTop == 0) {
@@ -418,6 +430,13 @@ void SmartRefreshLayoutComponentInstance::onHeaderMoving(const float &displayedH
 void SmartRefreshLayoutComponentInstance::onPullDownToRefresh() {
     if (m_eventEmitter) {
         m_eventEmitter->onPullDownToRefresh({});
+    }
+    if (delegate) { // header设置了背景色 
+        facebook::react::SharedColor headerBack = delegate->GetPrimaryColor();
+        if ((*headerBack) != -1 && headerBack != mHeaderBackgroundColor) {
+            mHeaderBackgroundColor = headerBack;
+            m_pullToRefreshNode.setHeaderBackgroundColor(mHeaderBackgroundColor);
+        }
     }
 };
 void SmartRefreshLayoutComponentInstance::onReleaseToRefresh() {

@@ -18,6 +18,7 @@ public:
     virtual void onReleaseToRefresh(){};
     virtual bool isComponentTop(){};
     virtual void onAppArea(){};
+    virtual void onDisAppArea(){};
 };
 
 class PullToRefreshNode : public ArkUINode {
@@ -42,12 +43,10 @@ public:
     void setMaxTranslate(float maxHeight);
     void setHeaderBackgroundColor(facebook::react::SharedColor const &color);
 
-    PullToRefreshConfigurator *getPullToRefreshConfigurator() {
-        std::weak_ptr<PullToRefreshConfigurator> config = std::move(refreshConfigurator);
-        if (config.lock()) {
-            return config.lock().get();
-        }
-        return std::move(refreshConfigurator).get();
+    std::shared_ptr<PullToRefreshConfigurator> getPullToRefreshConfigurator() {
+        CHECK(refreshConfigurator != nullptr) 
+            << "[PullToRefreshNode] refreshConfigurator is null!";
+        return refreshConfigurator;
     }
     void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) override;
     void setSensitivity(float setSensitivity);
