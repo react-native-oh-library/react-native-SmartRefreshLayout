@@ -78,7 +78,9 @@ public:
     void onReleaseToRefresh() override;
     void onHeaderReleased() override;
     void onAppArea() override;
-
+    void onDisAppArea() override;
+    void removeGesture();
+    
     void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
 
 
