@@ -38,6 +38,7 @@
 #include "SmartRefreshLayoutEmitRequestHandler.h"
 #include "SmartRefreshLayoutJSIBinder.h"
 #include "SmartRefreshLayoutNapiBinder.h"
+#include <hilog/log.h>
 
 namespace rnoh {
 
@@ -117,6 +118,13 @@ public:
     EventEmitRequestHandlers createEventEmitRequestHandlers() override {
         return {std::make_shared<SmartRefreshLayoutEmitRequestHandler>()};
     }
+
+    #ifdef PARALLELIZATION_ENABLE
+    std::vector<std::string> getComponentCreateInSubThread() override {
+        OH_LOG_Print(LOG_APP, LOG_INFO, 0, "SmartRefreshLayout", "enter getComponentCreateInSubThread");
+            return {"SmartRefreshLayoutComponentInstance", "RNCClassicsHeader"};
+    }
+    #endif
 };
 } // namespace rnoh
 #endif
