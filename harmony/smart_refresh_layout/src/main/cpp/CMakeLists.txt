@@ -5,3 +5,8 @@ file(GLOB rnoh_smart_refresh_layout_SRC CONFIGURE_DEPENDS *.cpp)
 add_library(rnoh_smart_refresh_layout SHARED ${rnoh_smart_refresh_layout_SRC})
 target_include_directories(rnoh_smart_refresh_layout PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(rnoh_smart_refresh_layout PUBLIC rnoh)
+
+if(PARALLELIZATION_ENABLE)
+    message("[SmartRefreshLayout]:rnoh_smart_refresh_layout PARALLELIZATION OPTIMIZATION is enabled!")
+    target_compile_definitions(rnoh_smart_refresh_layout PUBLIC PARALLELIZATION_ENABLE)
+endif()
