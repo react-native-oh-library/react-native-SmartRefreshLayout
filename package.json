@@ -1,6 +1,6 @@
 {
   "name": "@react-native-ohos/react-native-smartrefreshlayout",
-  "version": "0.7.0-rc.2",
+  "version": "0.7.0",
   "description": "基于android SmartRefreshLayout的封装",
   "harmony": {
     "alias": "react-native-smartrefreshlayout"
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-oh-library/react-native-SmartRefreshLayout.git"
+    "url": "https://gitcode.com/openharmony-sig/rntpc_react-native-SmartRefreshLayout.git"
   },
   "keywords": [
     "react",
@@ -35,9 +35,9 @@
   "author": "react-native-studio",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/react-native-studio/react-native-SmartRefreshLayout/issues"
+    "url": "https://gitcode.com/openharmony-sig/rntpc_react-native-SmartRefreshLayout/issues"
   },
-  "homepage": "https://github.com/react-native-studio/react-native-SmartRefreshLayout#readme",
+  "homepage": "https://gitcode.com/openharmony-sig/rntpc_react-native-SmartRefreshLayout#readme",
   "dependencies": {
     "prop-types": "*"
   },

@@ -15,3 +15,12 @@ yarn.lock
 lib
 *.tgz
 package-lock.json
+
+harmony/smart_refresh_layout/build/
+harmony/smart_refresh_layout/oh_modules/
+lib/
+node_modules/
+harmony/smart_refresh_layout/BuildProfile.ets
+harmony/smart_refresh_layout/oh-package-lock.json5
+package-lock.json
+*.tgz
